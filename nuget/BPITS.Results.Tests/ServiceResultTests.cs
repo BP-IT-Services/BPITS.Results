@@ -5,6 +5,26 @@ namespace BPITS.Results.Tests;
 public class ServiceResultTests
 {
     [Fact]
+    public void Success_WithNoValue_ReturnsExpected()
+    {
+        var result = ServiceResult.Success();
+        Assert.Equal(TestResultStatusCode.Ok, result.StatusCode);
+        Assert.Null(result.Value);
+        Assert.Null(result.ErrorMessage);
+        Assert.Null(result.ErrorDetails);
+    }
+    
+    [Fact]
+    public void Success_WithValue_ReturnsExpected()
+    {
+        var result = ServiceResult.Success(23);
+        Assert.Equal(TestResultStatusCode.Ok, result.StatusCode);
+        Assert.Equal(23, result.Value);
+        Assert.Null(result.ErrorMessage);
+        Assert.Null(result.ErrorDetails);
+    }
+    
+    [Fact]
     public void ValidationFailure_ReturnsExpected()
     {
         var result = ServiceResult.ValidationFailure("TestKey", "Test Error");
