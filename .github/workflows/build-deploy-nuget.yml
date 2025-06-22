@@ -30,8 +30,12 @@ jobs:
           $SEMVER="${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}".ToLower().Replace("v", "")
           echo "VERSION=$SEMVER"
           echo "VERSION=$SEMVER" >> $env:GITHUB_OUTPUT
+          
+      - name: Show detected version
+        run: echo '${{ toJSON(steps.get_version.outputs) }}'
 
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           sparse-checkout: 'nuget'
@@ -46,12 +50,10 @@ jobs:
           Remove-Item -Recurse -Force -Path "nuget"
           Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
 
-      - name: Setup .NET
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-
-      - run: echo '${{ toJSON(steps.get_version.outputs) }}'
         
       - name: Restore NuGet packages
         run: dotnet restore ./nuget.sln
@@ -73,9 +75,11 @@ jobs:
           path: "BPITS.Results.Tests/TestResults/results.trx"
           reporter: "dotnet-trx"
       
-      - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
+      - name: Package NuGet
+        run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
 
-      - uses: actions/upload-artifact@v4
+      - name: Store NuGet artifact
+        uses: actions/upload-artifact@v4
         with:
           name: nuget
           if-no-files-found: error
@@ -91,22 +95,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ create_nuget ]
     steps:
-      # Download the NuGet package created in the previous job
-      - uses: actions/download-artifact@v4
+      - name: Download NuGet artifact
+        uses: actions/download-artifact@v4
         with:
           name: nuget
           path: ${{ env.NuGetDirectory }}
       
-      # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
       
-      # TODO: Enable this step!
       # Publish all NuGet packages to NuGet.org
       # Use --skip-duplicate to prevent errors if a package with the same version already exists.
       # If you retry a failed workflow, already published packages will be skipped without error.
-#      - name: Publish NuGet package
-#        run: |
-#          foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
-#              dotnet nuget push $file --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-#          }
+      - name: Publish NuGet package
+        run: |
+          foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
+              dotnet nuget push $file --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          }
