@@ -121,6 +121,24 @@ namespace {namespaceName}
             ErrorDetails: result.ErrorDetails);
 
         /// <summary>
+        /// Creates a ServiceResult of a new type and value based on the lambda provided.
+        /// </summary>
+        /// <typeparam name=""TAlt"">The type of the result after conversion.</typeparam>
+        /// <param name=""mapFunc"">Function to determine the type and value of the new ServiceResult</param>
+        /// <returns>A ServiceResult of the new type after applying the mapping function.</returns>
+        public ServiceResult<TAlt> MapValue<TAlt>(Func<TAlt?> mapFunc)
+        {{
+            var mappedValue = mapFunc();
+            return new ServiceResult<TAlt>(
+                StatusCode: StatusCode,
+                Value: mappedValue,
+                ErrorMessage: ErrorMessage,
+                InnerException: InnerException,
+                ErrorDetails: ErrorDetails
+            );
+        }}
+
+        /// <summary>
         /// Creates a new ServiceResult using the specified type and value.
         /// Optionally, the error message and status code can be overriden.
         /// </summary>
@@ -147,70 +165,6 @@ namespace {namespaceName}
             Value: null);
 
         /// <summary>
-        /// Creates a ServiceResult of a new type and value based on the lambda provided.
-        /// </summary>
-        /// <typeparam name=""TAlt"">The type of the result after conversion.</typeparam>
-        /// <param name=""mapFunc"">Function to determine the type and value of the new ServiceResult</param>
-        /// <returns>A ServiceResult of the new type after applying the mapping function.</returns>
-        public ServiceResult<TAlt> MapValue<TAlt>(Func<TAlt?> mapFunc)
-        {{
-            var mappedValue = mapFunc();
-            return new ServiceResult<TAlt>(
-                StatusCode: StatusCode,
-                Value: mappedValue,
-                ErrorMessage: ErrorMessage,
-                InnerException: InnerException,
-                ErrorDetails: ErrorDetails
-            );
-        }}
-
-        /// <summary>
-        /// Create a typeless/empty failure ServiceResult, with an exception, error message,
-        /// status code and value.
-        /// </summary>
-        /// <param name=""exception""></param>
-        /// <param name=""errorMessage""></param>
-        /// <param name=""statusCode""></param>
-        public static ServiceResult Failure(
-            Exception? exception = null,
-            string? errorMessage = null,
-            {enumName} statusCode = default)
-            => new(
-                StatusCode: statusCode,
-                Value: null,
-                InnerException: exception,
-                ErrorMessage: errorMessage
-            );
-
-        /// <summary>
-        /// Create a typeless/empty failure ServiceResult, with an error message,
-        /// status code and value.
-        /// </summary>
-        /// <param name=""errorMessage""></param>
-        /// <param name=""statusCode""></param>
-        public static ServiceResult Failure(
-            string errorMessage,
-            {enumName} statusCode = default) =>
-            Failure(null, errorMessage, statusCode);
-
-        /// <summary>
-        /// Create a failure typeless/empty ServiceResult from an existing typed ServiceResult.
-        /// An error message and/or status code can be specified to override the underlying ServiceResult's properties.
-        /// </summary>
-        /// <param name=""serviceResult"">ServiceResult to be ""copied""</param>
-        /// <param name=""errorMessage"">Override the underlying ServiceResult's message</param>
-        /// <param name=""statusCode"">Override the underlying ServiceResult's status code</param>
-        public static ServiceResult FailureFromServiceResult<TAlt>(
-            ServiceResult<TAlt> serviceResult,
-            string? errorMessage = null,
-            {enumName}? statusCode = null)
-            => Failure<object>(
-                exception: serviceResult.InnerException ?? null,
-                errorMessage: errorMessage ?? serviceResult.ErrorMessage,
-                statusCode: statusCode ?? serviceResult.StatusCode,
-                errorDetails: serviceResult.ErrorDetails);
-
-        /// <summary>
         /// Create a successful ServiceResult, with the specified type, a status code and an optional value.
         /// </summary>
         /// <param name=""value""></param>
@@ -219,6 +173,34 @@ namespace {namespaceName}
         public static ServiceResult<T> Success<T>(T? value) => new(
             StatusCode: {enumName}.Ok,
             Value: value);
+
+        /// <summary>
+        /// Create a typeless/empty failure ServiceResult, with an error message,
+        /// status code and error details.
+        /// </summary>
+        /// <param name=""errorMessage""></param>
+        /// <param name=""statusCode""></param>
+        /// <param name=""errorDetails""></param>
+        public static ServiceResult Failure(
+            string errorMessage,
+            {enumName} statusCode = default,
+            Dictionary<string, string[]>? errorDetails = null) =>
+            Failure(null, errorMessage, statusCode, errorDetails);
+
+        /// <summary>
+        /// Create a failure ServiceResult, with the specified type, an error message,
+        /// status code and value.
+        /// </summary>
+        /// <param name=""errorMessage""></param>
+        /// <param name=""statusCode""></param>
+        /// <param name=""errorDetails""></param>
+        /// <param name=""value""></param>
+        public static ServiceResult<T> Failure<T>(
+            string errorMessage,
+            {enumName} statusCode = default,
+            Dictionary<string, string[]>? errorDetails = null,
+            T? value = default) =>
+            Failure(null, errorMessage, statusCode, value, errorDetails);
 
         /// <summary>
         /// Create a failure ServiceResult, with the specified type, an exception,
@@ -245,19 +227,42 @@ namespace {namespaceName}
             );
 
         /// <summary>
-        /// Create a failure ServiceResult, with the specified type, an error message,
-        /// status code and value.
+        /// Create a typeless/empty failure ServiceResult, with an exception, error message,
+        /// status code and error details.
         /// </summary>
+        /// <param name=""exception""></param>
         /// <param name=""errorMessage""></param>
         /// <param name=""statusCode""></param>
         /// <param name=""errorDetails""></param>
-        /// <param name=""value""></param>
-        public static ServiceResult<T> Failure<T>(
-            string errorMessage,
+        public static ServiceResult Failure(
+            Exception? exception = null,
+            string? errorMessage = null,
             {enumName} statusCode = default,
-            Dictionary<string, string[]>? errorDetails = null,
-            T? value = default) =>
-            Failure(null, errorMessage, statusCode, value, errorDetails);
+            Dictionary<string, string[]>? errorDetails = null)
+            => new(
+                StatusCode: statusCode,
+                Value: null,
+                InnerException: exception,
+                ErrorMessage: errorMessage,
+                ErrorDetails: errorDetails
+            );
+
+        /// <summary>
+        /// Create a failure typeless/empty ServiceResult from an existing typed ServiceResult.
+        /// An error message and/or status code can be specified to override the underlying ServiceResult's properties.
+        /// </summary>
+        /// <param name=""serviceResult"">ServiceResult to be ""copied""</param>
+        /// <param name=""errorMessage"">Override the underlying ServiceResult's message</param>
+        /// <param name=""statusCode"">Override the underlying ServiceResult's status code</param>
+        public static ServiceResult FailureFromServiceResult<TAlt>(
+            ServiceResult<TAlt> serviceResult,
+            string? errorMessage = null,
+            {enumName}? statusCode = null)
+            => Failure<object>(
+                exception: serviceResult.InnerException ?? null,
+                errorMessage: errorMessage ?? serviceResult.ErrorMessage,
+                statusCode: statusCode ?? serviceResult.StatusCode,
+                errorDetails: serviceResult.ErrorDetails);
 
         /// <summary>
         /// Create a failure ServiceResult from an existing ServiceResult but using a new value.
@@ -362,14 +367,14 @@ namespace {namespaceName}
         }}
 
         /// <summary>
-        /// Converts the current value using the specified mapping function if the value is not null,
+        /// Converts the current value using the specified mapping function **if the value is not null**,
         /// and returns a new ServiceResult of the specified type. If the value is null, the resulting value
         /// will be the default value for the specified type.
         /// </summary>
         /// <typeparam name=""TAlt"">The type of the result after conversion.</typeparam>
         /// <param name=""whenValueNotNullFunc"">The function to map the current value to the new type if it is not null.</param>
         /// <returns>An ApiResult of the new type after applying the mapping function, or the default value if the current value is null.</returns>
-        public ServiceResult<TAlt> ConvertValueNotNull<TAlt>(Func<T, TAlt?> whenValueNotNullFunc)
+        public ServiceResult<TAlt> MapValueWhenNotNull<TAlt>(Func<T, TAlt?> whenValueNotNullFunc)
         {{
             return MapValue(whenValueNotNullFunc, _ => default);
         }}
