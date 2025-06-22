@@ -65,12 +65,12 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=results.trx"
 
-      - name: Test Reporter
+      - name: Publish test results
         uses: dorny/test-reporter@v2.1.0
         if: ${{ !cancelled() }} # run this step even if previous step failed
         with:
           name: xUnit Tests
-          path: "BPITS.Results.Tests/TestResults/results.xml"
+          path: "BPITS.Results.Tests/TestResults/results.trx"
           reporter: "dotnet-trx"
       
       - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
