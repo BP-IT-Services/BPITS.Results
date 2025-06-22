@@ -41,11 +41,10 @@ jobs:
       # Therefore, all `nuget/` files should be moved to the project root.
       - name: Move `nuget` files to root
         run: |
-          ls -lah
-          shopt -s dotglob
-          mv nuget/* .
-          rm -rf nuget
-          ls -lah
+          Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
+          Get-ChildItem -Path "nuget" -Force | Move-Item -Destination "."
+          Remove-Item -Recurse -Force -Path "nuget"
+          Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
