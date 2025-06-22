@@ -47,7 +47,7 @@ jobs:
           Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
 
       - run: echo '${{ toJSON(steps.get_version.outputs) }}'
 
