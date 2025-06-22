@@ -8,6 +8,10 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <LangVersion>Latest</LangVersion>
+        <Authors>BytePerfect IT Services</Authors>
+        <RepositoryUrl>https://github.com/BP-IT-Services/BPITS.Results</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>result-pattern</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
