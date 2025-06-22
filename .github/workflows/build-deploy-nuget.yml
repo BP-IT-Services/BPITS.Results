@@ -46,9 +46,12 @@ jobs:
       # Therefore, all `nuget/` files should be moved to the project root.
       - name: Move `nuget` files to root
         run: |
+          Write-Output "Directory listing BEFORE moving to nuget/"
           Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
           Get-ChildItem -Path "nuget" -Force | Move-Item -Destination "."
           Remove-Item -Recurse -Force -Path "nuget"
+          
+          Write-Output "Directory listing AFTER moving to nuget/"
           Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
 
       - name: Setup .NET Core
