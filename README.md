@@ -674,5 +674,3 @@ public async Task<ServiceResult<User>> CreateUserAsync(CreateUserRequest request
     // Continue with creation...
 }
 ```
-
-This documentation provides a comprehensive guide to using BPITS.Results effectively in your .NET applications, emphasizing type safety, clear error handling, and maintainable code patterns.
