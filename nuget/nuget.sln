@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPITS.Results", "BPITS.Results\BPITS.Results.csproj", "{ABEFF23B-A1FE-487A-8321-170F6839CC7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BPITS.Results.Tests", "BPITS.Results.Tests\BPITS.Results.Tests.csproj", "{08D43B8A-CDCA-4380-B5E8-2F7BA54218D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABEFF23B-A1FE-487A-8321-170F6839CC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABEFF23B-A1FE-487A-8321-170F6839CC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABEFF23B-A1FE-487A-8321-170F6839CC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABEFF23B-A1FE-487A-8321-170F6839CC7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D43B8A-CDCA-4380-B5E8-2F7BA54218D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D43B8A-CDCA-4380-B5E8-2F7BA54218D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D43B8A-CDCA-4380-B5E8-2F7BA54218D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D43B8A-CDCA-4380-B5E8-2F7BA54218D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
