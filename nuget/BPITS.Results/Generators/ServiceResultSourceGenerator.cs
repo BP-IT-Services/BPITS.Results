@@ -334,6 +334,21 @@ namespace {namespaceName}
         public static implicit operator ServiceResult<T>(T? value) => ServiceResult.Success(value);
 
         /// <summary>
+        /// Creates a new typeless/empty ServiceResult using the specified type.
+        /// Optionally, the error message and status code can be overriden.
+        /// </summary>
+        /// <param name=""errorMessage""></param>
+        /// <param name=""errorDetails""></param>
+        /// <param name=""statusCode""></param>
+        public ServiceResult PassThroughFail(
+            string? errorMessage = null,
+            {enumName}? statusCode = null,
+            Dictionary<string, string[]>? errorDetails = null)
+        {{
+            return ServiceResult.FailureFromServiceResult<T, object>(this, null, errorMessage, errorDetails, statusCode);
+        }}
+
+        /// <summary>
         /// Creates a new ServiceResult using the specified type and value.
         /// Optionally, the error message and status code can be overriden.
         /// </summary>
@@ -349,21 +364,6 @@ namespace {namespaceName}
             Dictionary<string, string[]>? errorDetails = null)
         {{
             return ServiceResult.FailureFromServiceResult(this, value, errorMessage, errorDetails, statusCode);
-        }}
-
-        /// <summary>
-        /// Creates a new typeless/empty ServiceResult using the specified type.
-        /// Optionally, the error message and status code can be overriden.
-        /// </summary>
-        /// <param name=""errorMessage""></param>
-        /// <param name=""errorDetails""></param>
-        /// <param name=""statusCode""></param>
-        public ServiceResult PassThroughFail(
-            string? errorMessage = null,
-            Dictionary<string, string[]>? errorDetails = null,
-            {enumName}? statusCode = null)
-        {{
-            return ServiceResult.FailureFromServiceResult<T, object>(this, null, errorMessage, errorDetails, statusCode);
         }}
 
         /// <summary>
