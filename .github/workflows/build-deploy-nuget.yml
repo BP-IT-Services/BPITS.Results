@@ -52,8 +52,28 @@ jobs:
           dotnet-version: '8.x'
 
       - run: echo '${{ toJSON(steps.get_version.outputs) }}'
+        
+      - name: Restore NuGet packages
+        run: dotnet restore ./nuget.sln
+        
+      - name: Build library
+        run: dotnet build ./BPITS.Results/BPITS.Results.csproj --configuration Release --no-restore
+        
+      - name: Build tests
+        run: dotnet build ./nuget.sln --configuration Release --no-restore
+        
+      - name: Run tests
+        run: dotnet test --configuration Release --no-restore --no-build --logger "trx;LogFileName=results.trx"
 
-      - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('1.0.{0}', github.run_number) }}"
+      - name: Test Reporter
+        uses: dorny/test-reporter@v2.1.0
+        if: ${{ !cancelled() }} # run this step even if previous step failed
+        with:
+          name: xUnit Tests
+          path: "BPITS.Results.Tests/TestResults/results.xml"
+          reporter: "dotnet-trx"
+      
+      - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
 
       - uses: actions/upload-artifact@v4
         with:
