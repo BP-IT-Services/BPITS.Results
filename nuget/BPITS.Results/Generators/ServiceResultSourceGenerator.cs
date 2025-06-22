@@ -153,7 +153,7 @@ namespace {namespaceName}
             Dictionary<string, string[]>? errorDetails = null,
             {enumName}? statusCode = null)
         {{
-            return FailureFromServiceResult((ServiceResult<object>)this, value, errorMessage, errorDetails, statusCode);
+            return FailureFromServiceResult((ServiceResult<object>)this, value, errorMessage, statusCode, errorDetails);
         }}
 
         /// <summary>
@@ -279,8 +279,8 @@ namespace {namespaceName}
             ServiceResult<TAlt> serviceResult,
             T? value = default,
             string? errorMessage = null,
-            Dictionary<string, string[]>? errorDetails = null,
-            {enumName}? statusCode = null)
+            {enumName}? statusCode = null,
+            Dictionary<string, string[]>? errorDetails = null)
             => Failure(
                 exception: serviceResult.InnerException ?? null,
                 errorMessage: errorMessage ?? serviceResult.ErrorMessage,
@@ -345,7 +345,7 @@ namespace {namespaceName}
             {enumName}? statusCode = null,
             Dictionary<string, string[]>? errorDetails = null)
         {{
-            return ServiceResult.FailureFromServiceResult<T, object>(this, null, errorMessage, errorDetails, statusCode);
+            return ServiceResult.FailureFromServiceResult<T, object>(this, null, errorMessage, statusCode, errorDetails);
         }}
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace {namespaceName}
             {enumName}? statusCode = null,
             Dictionary<string, string[]>? errorDetails = null)
         {{
-            return ServiceResult.FailureFromServiceResult(this, value, errorMessage, errorDetails, statusCode);
+            return ServiceResult.FailureFromServiceResult(this, value, errorMessage, statusCode, errorDetails);
         }}
 
         /// <summary>
