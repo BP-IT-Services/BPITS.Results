@@ -34,7 +34,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: 'nuget'
+          sparse-checkout: 'nuget'
+          sparse-checkout-cone-mode: false
+            
+      # This step is needed because we can't check out a subdirectory.
+      # Therefore, all `nuget/` files should be moved to the project root.
+      - name: Move `nuget` files to root
+        run: |
+          ls -lah
+          shopt -s dotglob
+          mv nuget/* .
+          rm -rf nuget
+          ls -lah
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
