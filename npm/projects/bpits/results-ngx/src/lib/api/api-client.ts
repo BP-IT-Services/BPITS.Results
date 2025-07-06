@@ -4,7 +4,7 @@ import { ApiResult } from './models/api-result';
 import { TypeGuardPredicate } from './type-guards/type-guard-predicate';
 import { isApiResult } from './type-guards/is-api-result';
 import { ICustomStatusCodeProvider } from './custom-status-code-provider';
-
+import { HttpOptions } from './models/http-options';
 
 
 export abstract class ApiClient<TResultStatusEnum> {
