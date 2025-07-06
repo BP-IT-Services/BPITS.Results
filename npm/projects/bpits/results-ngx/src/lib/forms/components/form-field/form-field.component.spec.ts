@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormFieldComponent } from './form-field.component';
-import { ApiValidatedFormManager } from "../../api/utils/api-validated-form-manager";
+import { BaseApiValidatedFormManager } from '../../managers/base-api-validated-form-manager';
 
 describe('FormFieldComponent', () => {
   let component: FormFieldComponent;
@@ -17,7 +17,7 @@ describe('FormFieldComponent', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('field', 'test-field')
-    fixture.componentRef.setInput('formManager', new ApiValidatedFormManager(null!));
+    fixture.componentRef.setInput('formManager', new BaseApiValidatedFormManager(null!));
     fixture.detectChanges();
   });
 

@@ -7,7 +7,7 @@ import { GenericFormGroup } from './generic-form-group.type';
 export type FormValueChangedEvent = { hasChanged: boolean; }
 
 
-export interface IApiValidatedFormManager<TResultStatusEnum = any> {
+export interface IApiValidatedFormManager<TResultStatusEnum = unknown> {
   get validationApiResult(): BaseApiResult<unknown, TResultStatusEnum> | null;
   get isSubmitted(): boolean;
 
