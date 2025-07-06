@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ApiResult } from "../api/models/api-result";
+import { BaseApiResult } from "../api";
 
 @Pipe({
   name: 'apiValidationMessage',
   standalone: true
 })
 export class ApiValidationMessagePipe implements PipeTransform {
-  public transform(value: Readonly<ApiResult<unknown, unknown> | null | undefined>, field: string): string {
+  public transform(value: Readonly<BaseApiResult<unknown, unknown> | null | undefined>, field: string): string {
     if (!value)
       return '';
 
@@ -17,11 +17,11 @@ export class ApiValidationMessagePipe implements PipeTransform {
     return fieldErrors.join(', ');
   }
 
-  public static hasError(value: ApiResult<unknown, unknown>, field: string): boolean {
+  public static hasError(value: BaseApiResult<unknown, unknown>, field: string): boolean {
     return this.getErrors(value, field).length > 0;
   }
 
-  public static getErrors(value: ApiResult<unknown, unknown>, field: string): string[] {
+  public static getErrors(value: BaseApiResult<unknown, unknown>, field: string): string[] {
     if (!value.errorDetails)
       return [];
 

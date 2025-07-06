@@ -1,0 +1,15 @@
+<div class="field">
+  <ng-content />
+
+  <div>
+    @if (hasReactiveFormsError()) {
+      <small class="validation-error">{{ reactiveFormsError() }}</small>
+    }
+
+    @if (hasErrors() && apiResult(); as result) {
+      <small class="validation-error">{{ result | apiValidationMessage: field() }}</small>
+    }
+  </div>
+</div>
+
+

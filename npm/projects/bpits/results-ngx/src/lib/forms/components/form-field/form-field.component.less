@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep .field {
+  > label {
+    display: block;
+  }
+
+  > input,
+  > textarea,
+  > p-password {
+    display: block;
+    width: 100%;
+  }
+
+  .hint {
+    margin-top: 8px;
+    color: var(--text-secondary-color);
+    font-size: 0.8rem;
+  }
+
+  .validation-error {
+    color: var(--p-red-500);
+  }
+}
+
+.validation-error {
+  display: block;
+}

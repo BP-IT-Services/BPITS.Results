@@ -1,7 +1,7 @@
 import { TypeGuardPredicate } from './type-guard-predicate';
-import { ApiResult } from '../models/api-result';
+import { BaseApiResult } from '../models/base-api-result';
 
-export function isApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?: TypeGuardPredicate<T>): obj is ApiResult<T, TResultStatusEnum> {
+export function isBaseApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?: TypeGuardPredicate<T>): obj is BaseApiResult<T, TResultStatusEnum> {
   if (!obj || typeof obj !== 'object')
     return false;
 
@@ -29,7 +29,7 @@ export function isApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?:
     return true;
   }
 
-  const apiResultObj = obj as ApiResult<unknown, TResultStatusEnum>;
+  const apiResultObj = obj as BaseApiResult<unknown, TResultStatusEnum>;
   if (apiResultObj.value !== null
       && apiResultObj.value !== undefined
       && valueTypeGuard

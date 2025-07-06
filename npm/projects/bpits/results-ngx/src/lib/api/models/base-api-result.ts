@@ -1,4 +1,4 @@
-export type ApiResult<T, TResultStatusEnum> = {
+export type BaseApiResult<T, TResultStatusEnum> = {
   statusCode: TResultStatusEnum;
   value: T | null;
   errorMessage: string | null;
