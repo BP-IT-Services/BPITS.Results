@@ -5,7 +5,16 @@ export enum SampleApiResultStatusCode {
   Ok = 1,
   GenericFailure = 2,
   BadRequest = 3,
+  InsufficientPermissions = 4,
   AuthenticationTokenInvalid = 5,
+
+
+  InvalidCredentials = 6,
+  ResourceNotFound = 7,
+  ResourceAlreadyExists = 8,
+  ResourceExpired = 9,
+  ResourceDenied = 10,
+  FunctionalityDisabled = 11,
 
   // The following status codes are CLIENT-ONLY!
   // They can be used for providing accurate UX.

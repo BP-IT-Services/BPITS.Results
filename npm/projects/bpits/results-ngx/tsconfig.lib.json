@@ -7,7 +7,12 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": []
+    "types": [],
+    "paths": {
+      "@bpits/results-ngx": [
+        "./src/public-api"
+      ]
+    }
   },
   "exclude": [
     "**/*.spec.ts"

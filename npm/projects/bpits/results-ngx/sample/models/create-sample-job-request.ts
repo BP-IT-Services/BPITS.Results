@@ -1,5 +1,6 @@
 export type CreateSampleJobRequest = {
   name: string;
-  age: number;
-  details: Record<string, string> | null;
+  lengthDays: number;
+  calendarColorHex: string;
+  notes: string | null;
 }
