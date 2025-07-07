@@ -12,7 +12,7 @@ on:
       - published    # Run the workflow when a new GitHub release is published
 
 env:
-  NpmDirectory: npm/dist/@bpits/results-ngx
+  NpmDirectory: npm/dist/bpits/results-ngx
 
 defaults:
   run:
@@ -69,7 +69,7 @@ jobs:
         with:
           name: npm
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
           path: 'dist/bpits/results-ngx/**'
 
   deploy_npm:
