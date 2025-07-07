@@ -8,10 +8,29 @@ import { HttpOptions } from './models/http-options';
 
 
 export abstract class ApiClient<TResultStatusEnum> {
+  private _baseUrl: string | null | undefined;
+  public get baseUrl(): string | null | undefined {
+    return this._baseUrl;
+  }
+
   protected constructor(
     protected _http: HttpClient,
-    protected resultStatusCodeProvider: ICustomStatusCodeProvider<TResultStatusEnum>)
+    protected resultStatusCodeProvider: ICustomStatusCodeProvider<TResultStatusEnum>,
+    baseUrl?: string | null | undefined)
   {
+    this.setBaseUrl(baseUrl);
+  }
+
+  public setBaseUrl(url: string | null | undefined) {
+    if(!url) {
+      this._baseUrl = undefined;
+      return;
+    }
+
+    url = url.trim();
+    this._baseUrl = url.endsWith('/')
+      ? url
+      : `${url}/`;
   }
 
   /**
@@ -163,6 +182,10 @@ export abstract class ApiClient<TResultStatusEnum> {
     valueTypeGuard?: TypeGuardPredicate<TResult>,
     cancelRequest$?: Observable<unknown>
   ): Promise<BaseApiResult<TResult, TResultStatusEnum>> {
+    if(this._baseUrl) { // Prefix the URL with the Base URL if set.
+      request = request.clone({ url: this._baseUrl + request.url });
+    }
+
     if (!request.headers.has('Content-Type')) { // Set the content type if it hasn't already.
       request.headers.set('Content-Type', 'application/json');
     }
@@ -172,8 +195,6 @@ export abstract class ApiClient<TResultStatusEnum> {
 
     try {
       const response = await firstValueFrom(this._http.request(request).pipe(takeUntil(cancelRequest$ ?? of())));
-      subscription?.unsubscribe();
-
       if (!(response instanceof HttpResponse) || !isBaseApiResult<TResult, TResultStatusEnum>(response.body, valueTypeGuard)) {
         console.error('Unexpected value received from API', response);
         return this.makeApiResult({
@@ -184,8 +205,6 @@ export abstract class ApiClient<TResultStatusEnum> {
 
       return response.body;
     } catch (err) {
-      subscription?.unsubscribe();
-
       if (hasCancelled) {
         return this.makeApiResult({
           statusCode: this.resultStatusCodeProvider.requestCancelled,
@@ -194,6 +213,8 @@ export abstract class ApiClient<TResultStatusEnum> {
       }
 
       throw err;
+    } finally {
+      subscription?.unsubscribe();
     }
   }
 
