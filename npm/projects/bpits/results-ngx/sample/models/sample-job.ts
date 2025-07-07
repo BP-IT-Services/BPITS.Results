@@ -1,8 +1,9 @@
 export type SampleJob = {
   id: string;
   name: string;
-  age: number;
-  details: Record<string, string> | null;
+  lengthDays: number;
+  calendarColorHex: string;
+  notes: string | null;
 }
 
 export function isSampleJob(obj: unknown): obj is SampleJob {
@@ -12,6 +13,7 @@ export function isSampleJob(obj: unknown): obj is SampleJob {
   const recordObj = obj as Record<string, unknown>;
   return typeof recordObj["id"] === 'string'
     && typeof recordObj["name"] === 'string'
-    && typeof recordObj["age"] === 'number'
-    && (recordObj["details"] === null || typeof recordObj["details"] === 'object');
+    && typeof recordObj["lengthDays"] === 'number'
+    && typeof recordObj["calendarColorHex"] === 'string'
+    && (!recordObj["notes"] || typeof recordObj["notes"] === 'string');
 }

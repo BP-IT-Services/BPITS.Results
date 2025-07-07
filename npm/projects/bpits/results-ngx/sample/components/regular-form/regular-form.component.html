@@ -1,0 +1,50 @@
+<form class="grid" [formGroup]="formGroup">
+  <div class="col-12 md:col-6">
+    <app-form-field field="name"
+                    [formManager]="formManager"
+                    [formErrorMessages]="{required: 'Name is required.'}">
+      <label for="name">
+        Name
+        <span class="required-asterisk">*</span>
+      </label>
+      <input id="name" formControlName="name"
+             [class]="formManager.getInvalidFieldClasses('name')"
+             autocomplete="off" />
+    </app-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <app-form-field field="calendarColorHex"
+                    [formManager]="formManager"
+                    [formErrorMessages]="{required: 'Colour is required.'}">
+      <label for="calendarColorHex">Calendar Colour</label>
+      <div class="flex flex-row align-items-center">
+        <input id="calendarColorHex" type="color" formControlName="calendarColorHex"
+               [class]="formManager.getInvalidFieldClasses('calendarColorHex')"
+               autocomplete="off" />
+        <span>{{ formGroup.controls.calendarColorHex.value }}</span>
+      </div>
+    </app-form-field>
+  </div>
+
+  <div class="col-12">
+    <app-form-field field="lengthDays"
+                    [formGroup]="formGroup"
+                    [formManager]="formManager">
+      <label for="lengthDays">Length (in days)</label>
+      <input id="lengthDays" type="number" formControlName="lengthDays"
+                [class]="formManager.getInvalidFieldClasses('lengthDays')"
+                autocomplete="off" />
+    </app-form-field>
+  </div>
+
+  <div class="col-12">
+    <app-form-field field="notes"
+                    [formManager]="formManager">
+      <label for="notes">Notes</label>
+      <textarea id="notes" formControlName="notes"
+                [class]="formManager.getInvalidFieldClasses('notes')"
+                autocomplete="off"></textarea>
+    </app-form-field>
+  </div>
+</form>
