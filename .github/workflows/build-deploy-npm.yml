@@ -17,6 +17,9 @@ env:
 defaults:
   run:
     shell: pwsh
+
+permissions:
+  id-token: write # Required for `--provenance` flag on `npm publish`
     
 jobs:
   create_npm:
