@@ -1,6 +1,7 @@
 {
   "name": "@bpits/results-ngx",
   "repository": "https://github.com/BP-IT-Services/BPITS.Results",
+  "license": "GNU GPLv3",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^19.2.0",
