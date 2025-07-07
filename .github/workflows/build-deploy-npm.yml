@@ -90,6 +90,7 @@ jobs:
           path: ${{ env.NpmDirectory }}
 
       - name: Update package version
+        working-directory: ${{ env.NpmDirectory }}
         run: npm version ${{ needs.create_npm.outputs.version }}
       
       # Publish all NPM packages.
