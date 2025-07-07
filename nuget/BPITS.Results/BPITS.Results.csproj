@@ -14,7 +14,7 @@
         <PackageTags>result-pattern</PackageTags>
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseExpression>GPL-3.0</PackageLicenseExpression>
+        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
