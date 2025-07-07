@@ -95,6 +95,7 @@ jobs:
       
       # Publish all NPM packages.
       - name: Publish NPM package
+        working-directory: ${{ env.NpmDirectory }}
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_REGISTRY_TOKEN }}
