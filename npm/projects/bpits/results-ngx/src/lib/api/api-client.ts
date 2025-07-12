@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
-import { firstValueFrom, Observable, of, take, takeUntil } from 'rxjs';
+import { firstValueFrom, Observable, take, takeUntil } from 'rxjs';
 import { BaseApiResult } from './models/base-api-result';
 import { TypeGuardPredicate } from './type-guards/type-guard-predicate';
 import { isBaseApiResult } from './type-guards/is-base-api-result';
@@ -22,7 +22,7 @@ export abstract class ApiClient<TResultStatusEnum> {
   }
 
   public setBaseUrl(url: string | null | undefined) {
-    if(!url) {
+    if (!url) {
       this._baseUrl = undefined;
       return;
     }
@@ -79,7 +79,7 @@ export abstract class ApiClient<TResultStatusEnum> {
     cancelRequest$?: Observable<unknown>
   ): Promise<BaseApiResult<TResult, TResultStatusEnum>> {
     try {
-      const request = new HttpRequest<unknown>('POST', url, payload, options);
+      const request = new HttpRequest('POST', url, payload, options);
       return await this.requestAsync(request, valueTypeGuard, cancelRequest$);
     } catch (err) {
       console.error("Request to API failed!", err);
@@ -182,7 +182,7 @@ export abstract class ApiClient<TResultStatusEnum> {
     valueTypeGuard?: TypeGuardPredicate<TResult>,
     cancelRequest$?: Observable<unknown>
   ): Promise<BaseApiResult<TResult, TResultStatusEnum>> {
-    if(this._baseUrl) { // Prefix the URL with the Base URL if set.
+    if (this._baseUrl) { // Prefix the URL with the Base URL if set.
       request = request.clone({ url: this._baseUrl + request.url });
     }
 
@@ -194,7 +194,11 @@ export abstract class ApiClient<TResultStatusEnum> {
     const subscription = cancelRequest$?.pipe(take(1)).subscribe(() => hasCancelled = true);
 
     try {
-      const response = await firstValueFrom(this._http.request(request).pipe(takeUntil(cancelRequest$ ?? of())));
+      const httpRequest$ = cancelRequest$
+        ? this._http.request(request).pipe(takeUntil(cancelRequest$))
+        : this._http.request(request);
+
+      const response = await firstValueFrom(httpRequest$);
       if (!(response instanceof HttpResponse) || !isBaseApiResult<TResult, TResultStatusEnum>(response.body, valueTypeGuard)) {
         console.error('Unexpected value received from API', response);
         return this.makeApiResult({
