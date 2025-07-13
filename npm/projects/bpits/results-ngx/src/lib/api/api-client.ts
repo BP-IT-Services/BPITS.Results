@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
-import { firstValueFrom, Observable, take, takeUntil } from 'rxjs';
+import { filter, firstValueFrom, Observable, take, takeUntil } from 'rxjs';
 import { BaseApiResult } from './models/base-api-result';
 import { TypeGuardPredicate } from './type-guards/type-guard-predicate';
 import { isBaseApiResult } from './type-guards/is-base-api-result';
@@ -198,7 +198,12 @@ export abstract class ApiClient<TResultStatusEnum> {
         ? this._http.request(request).pipe(takeUntil(cancelRequest$))
         : this._http.request(request);
 
-      const response = await firstValueFrom(httpRequest$);
+      const httpResponse$ = httpRequest$.pipe(
+        filter(event => event instanceof HttpResponse),
+        take(1)
+      );
+
+      const response = await firstValueFrom(httpResponse$);
       if (!(response instanceof HttpResponse) || !isBaseApiResult<TResult, TResultStatusEnum>(response.body, valueTypeGuard)) {
         console.error('Unexpected value received from API', response);
         return this.makeApiResult({
