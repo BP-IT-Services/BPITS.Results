@@ -1,33 +1,33 @@
 import { TypeGuardPredicate } from './type-guard-predicate';
 import { BaseApiResult } from '../models/base-api-result';
+import { TypeGuardBuilder } from './type-guard-builder';
+import { CommonTypeGuards } from './common-type-guards';
 
-export function isBaseApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?: TypeGuardPredicate<T>): obj is BaseApiResult<T, TResultStatusEnum> {
-  if (!obj || typeof obj !== 'object')
-    return false;
-
-  const recordObj = <Record<string, unknown>>obj;
-  if (typeof recordObj['statusCode'] !== 'number')
-    return false;
-
-
-  // Check the `errorDetails` key
-  if (!!recordObj['errorDetails']) {
-    if (typeof recordObj['errorDetails'] !== 'object')
-      return false;
-
-    const errorDetailsRecord = recordObj['errorDetails'] as Record<string, unknown>;
-
-    // Check the `errorDetails` values
-    for (const key of Object.keys(errorDetailsRecord)) {
-      if (!Array.isArray(errorDetailsRecord[key]))
+export const errorDetailsTypeGuardBuilder = TypeGuardBuilder
+  .start<Record<string, string[]>>('ErrorDetails')
+  .validateRoot((obj: unknown): obj is Record<string, string[]> => {
+    const recordObj = obj as Record<string, unknown>;
+    for (const key of Object.keys(recordObj)) {
+      if (!Array.isArray(recordObj[key]))
         return false;
 
-      if (errorDetailsRecord[key].some(e => typeof e !== 'string'))
+      if (recordObj[key].some(e => typeof e !== 'string'))
         return false;
     }
 
     return true;
-  }
+  });
+
+export const baseApiResultTypeGuard = TypeGuardBuilder
+  .start<BaseApiResult<unknown, unknown>>('BaseApiResult')
+  .validateProperty('statusCode', CommonTypeGuards.basics.number())
+  .validateProperty('errorMessage', CommonTypeGuards.basics.nullableString())
+  .validateProperty('errorDetails', errorDetailsTypeGuardBuilder.buildNullable())
+  .build();
+
+export function isBaseApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?: TypeGuardPredicate<T>): obj is BaseApiResult<T, TResultStatusEnum> {
+  if(!baseApiResultTypeGuard(obj))
+    return false;
 
   const apiResultObj = obj as BaseApiResult<unknown, TResultStatusEnum>;
   if (apiResultObj.value !== null

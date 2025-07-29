@@ -1,6 +1,6 @@
 export type BaseApiResult<T, TResultStatusEnum> = {
   statusCode: TResultStatusEnum;
-  value: T | null;
-  errorMessage: string | null;
-  errorDetails: Record<string, string[]> | null;
+  value: T | null | undefined;
+  errorMessage: string | null | undefined;
+  errorDetails: Record<string, string[]> | null | undefined;
 }
