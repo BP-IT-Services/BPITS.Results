@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { filter, firstValueFrom, Observable, take, takeUntil } from 'rxjs';
 import { BaseApiResult } from './models/base-api-result';
-import { TypeGuardPredicate } from './type-guards/type-guard-predicate';
 import { isBaseApiResult } from './type-guards/is-base-api-result';
 import { ICustomStatusCodeProvider } from './custom-status-code-provider';
 import { HttpOptions } from './models/http-options';
+import { TypeGuardPredicate } from '@bpits/type-guards';
 
 
 export abstract class ApiClient<TResultStatusEnum> {
