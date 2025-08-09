@@ -19,8 +19,8 @@ export const errorDetailsTypeGuardBuilder = StrictTypeGuardBuilder
 export const baseApiResultTypeGuard = TypeGuardBuilder
   .start<BaseApiResult<unknown, unknown>>('BaseApiResult')
   .validateProperty('statusCode', CommonTypeGuards.basics.number())
-  .validateProperty('errorMessage', CommonTypeGuards.basics.string.nullable())
-  .validateProperty('errorDetails', errorDetailsTypeGuardBuilder.build.nullable())
+  .validateProperty('errorMessage', CommonTypeGuards.basics.string().nullable())
+  .validateProperty('errorDetails', errorDetailsTypeGuardBuilder.build().nullable())
   .build();
 
 export function isBaseApiResult<T, TResultStatusEnum>(obj: unknown, valueTypeGuard?: TypeGuardPredicate<T>): obj is BaseApiResult<T, TResultStatusEnum> {

@@ -6,7 +6,7 @@
   "peerDependencies": {
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
-    "@bpits/type-guards": "^1.0.2"
+    "@bpits/type-guards": "^1.0.4"
   },
   "dependencies": {
     "tslib": "^2.3.0"
