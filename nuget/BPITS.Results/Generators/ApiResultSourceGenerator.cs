@@ -22,8 +22,9 @@ public class ApiResultSourceGenerator : IIncrementalGenerator
             static (spc, source) => Execute(source!, spc));
     }
 
-    private static void Execute(INamedTypeSymbol enumSymbol, SourceProductionContext context)
+    private static void Execute(ApiResultGeneratorArguments generatorArgs, SourceProductionContext context)
     {
+        var enumSymbol = generatorArgs.NamedTypeSymbol;
         var enumNamespace = enumSymbol.ContainingNamespace.ToDisplayString();
         var enumName = enumSymbol.Name;
 
@@ -38,10 +39,14 @@ public class ApiResultSourceGenerator : IIncrementalGenerator
 
     private static string GenerateApiResultClasses(string namespaceName, string enumName, string enumNamespace)
     {
+        var actionResultMapperUsings = "";
+        var actionResultMapperClassInheritance = "";
+        
         return $@"#nullable enable
 using System;
 using System.Collections.Generic;
 using {enumNamespace};
+{actionResultMapperUsings}
 
 namespace {namespaceName}
 {{
@@ -50,7 +55,7 @@ namespace {namespaceName}
         object? Value,
         string? ErrorMessage = null,
         Dictionary<string, string[]>? ErrorDetails = null
-    )
+    ) {actionResultMapperClassInheritance}
     {{
         public static implicit operator ApiResult(ApiResult<object> objResult) => new ApiResult(
             StatusCode: objResult.StatusCode,
@@ -179,5 +184,47 @@ namespace {namespaceName}
         public static implicit operator ApiResult<T>(ServiceResult<T> value) => ApiResult.FromServiceResult(value);
     }}
 }}";
+    }
+
+    private static ActionResultMapperSource GenerateActionResultMapper(ApiResultGeneratorArguments? generatorArgs)
+    {
+        if (generatorArgs is null || !generatorArgs.IncludeActionResultMapper)
+        {
+            return new ActionResultMapperSource(string.Empty, string.Empty, string.Empty);
+        }
+
+        var actionResultMapperNamespace = "";
+        var actionResultMapperClassName = "";
+        
+        var inheritance = ": IActionResult";
+        var usings = @$"
+using Microsoft.AspNetCore.Mvc;
+using {actionResultMapperNamespace};
+";
+        
+        var methods = @$"
+public Task ExecuteResultAsync(ActionContext context) {{
+    return Task.FromResult({actionResultMapperClassName}.MapStatusCode);
+}}
+";
+        
+        return new ActionResultMapperSource(
+            usings: usings,
+            classInheritance: inheritance,
+            classMethods: methods);
+    }
+}
+
+public record ActionResultMapperSource
+{
+    public string Usings { get; }
+    public string ClassInheritance { get; }
+    public string ClassMethods { get; }
+    
+    public ActionResultMapperSource(string usings, string classInheritance, string classMethods)
+    {
+        Usings = usings;
+        ClassInheritance = classInheritance;
+        ClassMethods = classMethods;
     }
 }
