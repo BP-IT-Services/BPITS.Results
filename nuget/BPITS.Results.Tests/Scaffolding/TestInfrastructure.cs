@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace BPITS.Results.Tests.Scaffolding;
 
 // Test status code enum similar to ROSCO's ResultStatusCode

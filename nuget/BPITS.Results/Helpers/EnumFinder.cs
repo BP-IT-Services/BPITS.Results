@@ -35,7 +35,10 @@ public static class EnumFinder
         if (resultStatusCodeAttribute is null)
             return null;
         
-        var hasActionResultMapper = resultStatusCodeAttribute.ConstructorArguments.Any();
+        var hasActionResultMapper = resultStatusCodeAttribute
+            .NamedArguments
+            .FirstOrDefault(e => e.Key == "IncludeActionResultMapper")
+            .Value.Value as bool? == true;
         return new ApiResultGeneratorArguments(hasActionResultMapper, enumSymbol);
     }
 
