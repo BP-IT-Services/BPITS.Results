@@ -57,6 +57,7 @@ public class AspNetCoreApiResultSourceGenerator : IIncrementalGenerator
         return $@"#nullable enable
 using System.Net;
 using BPITS.Results.AspNetCore;
+using BPITS.Results.AspNetCore.Abstractions;
 
 namespace {enumNamespace}
 {{
@@ -110,6 +111,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using {Constants.MainNamespace};
+using {Constants.AbstractionsNamespace};
 using {enumNamespace};
 
 namespace BPITS.Results
@@ -162,6 +164,7 @@ namespace BPITS.Results
     {
         return $@"#nullable enable
 using Microsoft.Extensions.DependencyInjection;
+using BPITS.Results.AspNetCore.Abstractions;
 using {enumNamespace};
 
 namespace BPITS.Results.AspNetCore

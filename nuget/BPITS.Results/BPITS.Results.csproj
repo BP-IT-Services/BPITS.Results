@@ -26,4 +26,8 @@
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BPITS.Results.Abstractions\BPITS.Results.Abstractions.csproj" />
+    </ItemGroup>
 </Project>

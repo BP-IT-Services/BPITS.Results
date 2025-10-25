@@ -9,6 +9,8 @@
         <IsTestProject>true</IsTestProject>
 
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
