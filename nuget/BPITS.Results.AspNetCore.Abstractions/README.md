@@ -1,1 +1,21 @@
-Test file
+# BPITS.Results.AspNetCore.Abstractions
+
+This package contains the core abstractions and interfaces used by the [BPITS.Results.AspNetCore](https://www.nuget.org/packages/BPITS.Results.AspNetCore) source generator.
+
+## Installation
+
+This package is automatically included as a transitive dependency when you install `BPITS.Results.AspNetCore`:
+
+```bash
+dotnet add package BPITS.Results.AspNetCore
+```
+
+You typically do not need to install this package directly.
+
+## Repository
+
+[https://github.com/BP-IT-Services/BPITS.Results](https://github.com/BP-IT-Services/BPITS.Results)
+
+## License
+
+MIT
