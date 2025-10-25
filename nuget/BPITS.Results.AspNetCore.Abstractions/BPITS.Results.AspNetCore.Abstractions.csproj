@@ -2,8 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>default</LangVersion>
-        <Nullable>enable</Nullable>
+
+        <PackageId>BPITS.Results.AspNetCore.Abstractions</PackageId>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
 </Project>

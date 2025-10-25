@@ -4,17 +4,10 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
-        <LangVersion>Latest</LangVersion>
-        <Authors>BytePerfect IT Services</Authors>
-        <RepositoryUrl>https://github.com/BP-IT-Services/BPITS.Results</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>result-pattern;aspnetcore;actionresult</PackageTags>
-        <Description>ASP.NET Core extensions for BPITS.Results that enable ApiResult to implement IActionResult with automatic HTTP status code mapping.</Description>
 
+        <PackageId>BPITS.Results.AspNetCore</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>ASP.NET Core extensions for BPITS.Results that enable ApiResult to implement IActionResult with automatic HTTP status code mapping.</Description>
     </PropertyGroup>
 
     <ItemGroup>

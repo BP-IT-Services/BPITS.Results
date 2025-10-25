@@ -5,16 +5,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
-        <LangVersion>Latest</LangVersion>
-        <Authors>BytePerfect IT Services</Authors>
-        <RepositoryUrl>https://github.com/BP-IT-Services/BPITS.Results</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>result-pattern</PackageTags>
 
+        <PackageId>BPITS.Results</PackageId>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>

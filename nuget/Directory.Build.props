@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <!-- Shared package metadata -->
+    <Version>1.0.0</Version>
+    <Authors>BytePerfect IT Services</Authors>
+    <RepositoryUrl>https://github.com/BP-IT-Services/BPITS.Results</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>result-pattern</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <!-- Common compiler settings -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+</Project>
