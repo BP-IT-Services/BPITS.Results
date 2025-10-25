@@ -50,7 +50,7 @@ using {enumNamespace};
 
 namespace {namespaceName}
 {{
-    public record ApiResult(
+    public partial record ApiResult(
         {enumName} StatusCode,
         object? Value,
         string? ErrorMessage = null,
@@ -173,7 +173,7 @@ namespace {namespaceName}
         }}
     }}
 
-    public record ApiResult<T>(
+    public partial record ApiResult<T>(
         {enumName} StatusCode,
         T? Value,
         string? ErrorMessage = null,
