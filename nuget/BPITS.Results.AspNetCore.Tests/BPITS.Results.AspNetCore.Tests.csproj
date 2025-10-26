@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
+        <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +13,9 @@
     <ItemGroup>
         <ProjectReference Include="..\BPITS.Results.Abstractions\BPITS.Results.Abstractions.csproj" />
         <ProjectReference Include="..\BPITS.Results.AspNetCore.Abstractions\BPITS.Results.AspNetCore.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\BPITS.Results.AspNetCore\BPITS.Results.AspNetCore.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"/>
