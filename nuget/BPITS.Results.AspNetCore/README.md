@@ -20,14 +20,14 @@ dotnet add package BPITS.Results.AspNetCore
 
 ### 1. Define Your Status Enum
 
-Apply both `[ResultStatusCode]` and `[GenerateActionResultMapper]` attributes to enable ASP.NET Core integration:
+Apply both `[ResultStatusCode]` and `[EnableApiResultMapping]` attributes to enable ASP.NET Core integration:
 
 ```csharp
 using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
 [ResultStatusCode]
-[GenerateActionResultMapper]
+[EnableApiResultMapping]
 public enum MyApiStatusCode
 {
     Ok = 0,
@@ -47,7 +47,7 @@ using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
 [ResultStatusCode]
-[GenerateActionResultMapper]
+[EnableApiResultMapping]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]
@@ -113,7 +113,7 @@ public class UsersController : ControllerBase
 
 ## How It Works
 
-When you apply the `[GenerateActionResultMapper]` attribute to your enum, the source generator:
+When you apply the `[EnableApiResultMapping]` attribute to your enum, the source generator:
 
 1. **Generates a partial `ApiResult<TEnum>` class** that implements `IActionResult`
 2. **Creates an HTTP status code mapper** that reads the `[HttpStatusCode]` attributes from your enum
@@ -142,7 +142,7 @@ In the examples above, enum values like `400` and `404` are used for clarity, bu
 
 ```csharp
 [ResultStatusCode]
-[GenerateActionResultMapper]
+[EnableApiResultMapping]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]
@@ -169,7 +169,7 @@ When using BPITS.Results alone, returning `ApiResult` from a controller would re
     DefaultFailureValue = nameof(InternalServerError),
     BadRequestValue = nameof(BadRequest)
 )]
-[GenerateActionResultMapper]
+[EnableApiResultMapping]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]

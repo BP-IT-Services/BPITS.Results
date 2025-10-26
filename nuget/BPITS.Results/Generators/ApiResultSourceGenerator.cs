@@ -188,7 +188,7 @@ namespace {namespaceName}
 
     private static ActionResultMapperSource GenerateActionResultMapper(ApiResultGeneratorArguments? generatorArgs)
     {
-        if (generatorArgs is null || !generatorArgs.IncludeActionResultMapper)
+        if (generatorArgs is null || !generatorArgs.EnableApiResultMapping)
         {
             return new ActionResultMapperSource(string.Empty, string.Empty, string.Empty);
         }

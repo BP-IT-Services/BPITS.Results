@@ -10,12 +10,12 @@ public class AspNetCoreApiResultSourceGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Find all enums with the ResultStatusCode attribute that include ActionResultMapper
+        // Find all enums with the ResultStatusCode attribute that have EnableApiResultMapping
         var enumDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => EnumFinder.IsSyntaxTargetForGeneration(s),
                 transform: static (ctx, _) => EnumFinder.GetSemanticTargetForGeneration(ctx))
-            .Where(static m => m is not null && m.IncludeActionResultMapper);
+            .Where(static m => m is not null && m.EnableApiResultMapping);
 
         // Generate the AspNetCore-specific ApiResult classes and mappers
         context.RegisterSourceOutput(enumDeclarations,

@@ -8,7 +8,7 @@ namespace BPITS.Results.AspNetCore.Tests.Scaffolding;
     DefaultFailureValue = nameof(GenericFailure),
     BadRequestValue = nameof(BadRequest)
 )]
-[GenerateActionResultMapper]
+[EnableApiResultMapping]
 public enum TestStatusCode
 {
     [HttpStatusCode(HttpStatusCode.InternalServerError)]

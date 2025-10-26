@@ -5,12 +5,12 @@ namespace BPITS.Results.Helpers;
 
 public record ApiResultGeneratorArguments
 {
-    public bool IncludeActionResultMapper { get; }
+    public bool EnableApiResultMapping { get; }
     public INamedTypeSymbol NamedTypeSymbol { get; }
 
-    public ApiResultGeneratorArguments(bool includeActionResultMapper, INamedTypeSymbol namedTypeSymbol)
+    public ApiResultGeneratorArguments(bool enableApiResultMapping, INamedTypeSymbol namedTypeSymbol)
     {
-        IncludeActionResultMapper = includeActionResultMapper;
+        EnableApiResultMapping = enableApiResultMapping;
         NamedTypeSymbol = namedTypeSymbol;
     }
 }
@@ -35,11 +35,11 @@ public static class EnumFinder
         if (resultStatusCodeAttribute is null)
             return null;
 
-        // Check if the enum has the GenerateActionResultMapper attribute (AspNetCore extension)
-        var hasActionResultMapper = enumSymbol.GetAttributes()
-            .Any(a => a.AttributeClass?.Name is "GenerateActionResultMapperAttribute" or "GenerateActionResultMapper");
+        // Check if the enum has the EnableApiResultMapping attribute (AspNetCore extension)
+        var enableApiResultMapping = enumSymbol.GetAttributes()
+            .Any(a => a.AttributeClass?.Name is "EnableApiResultMappingAttribute" or "EnableApiResultMapping");
 
-        return new ApiResultGeneratorArguments(hasActionResultMapper, enumSymbol);
+        return new ApiResultGeneratorArguments(enableApiResultMapping, enumSymbol);
     }
 
     public static bool Validate(INamedTypeSymbol enumSymbol, SourceProductionContext context)
