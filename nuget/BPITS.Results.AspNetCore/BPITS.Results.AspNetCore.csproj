@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <DevelopmentDependency>true</DevelopmentDependency>
+
+        <PackageId>BPITS.Results.AspNetCore</PackageId>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Description>ASP.NET Core extensions for BPITS.Results that enable ApiResult to implement IActionResult with automatic HTTP status code mapping.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BPITS.Results.AspNetCore.Abstractions\BPITS.Results.AspNetCore.Abstractions.csproj" />
+        <ProjectReference Include="..\BPITS.Results\BPITS.Results.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')" />
+    </ItemGroup>
+</Project>

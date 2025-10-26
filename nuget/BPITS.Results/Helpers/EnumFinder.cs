@@ -3,26 +3,43 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BPITS.Results.Helpers;
 
+public record ApiResultGeneratorArguments
+{
+    public bool EnableApiResultMapping { get; }
+    public INamedTypeSymbol NamedTypeSymbol { get; }
+
+    public ApiResultGeneratorArguments(bool enableApiResultMapping, INamedTypeSymbol namedTypeSymbol)
+    {
+        EnableApiResultMapping = enableApiResultMapping;
+        NamedTypeSymbol = namedTypeSymbol;
+    }
+}
+
 public static class EnumFinder
 {
     public static bool IsSyntaxTargetForGeneration(SyntaxNode node)
         => node is EnumDeclarationSyntax m && m.AttributeLists.Count > 0;
 
-    public static INamedTypeSymbol? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+    public static ApiResultGeneratorArguments? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
     {
         var enumDeclarationSyntax = (EnumDeclarationSyntax)context.Node;
         var model = context.SemanticModel;
         var enumSymbol = model.GetDeclaredSymbol(enumDeclarationSyntax) as INamedTypeSymbol;
-            
         if (enumSymbol is null)
             return null;
 
         // Check if the enum has the ResultStatusCode attribute
-        var hasAttribute = enumSymbol.GetAttributes()
-            .Any(ad => ad.AttributeClass?.Name == "ResultStatusCodeAttribute" 
-                       || ad.AttributeClass?.Name == "ResultStatusCode");
+        var resultStatusCodeAttribute = enumSymbol.GetAttributes()
+            .FirstOrDefault(e => e.AttributeClass?.Name is "ResultStatusCodeAttribute" or "ResultStatusCode");
 
-        return hasAttribute ? enumSymbol : null;
+        if (resultStatusCodeAttribute is null)
+            return null;
+
+        // Check if the enum has the EnableApiResultMapping attribute (AspNetCore extension)
+        var enableApiResultMapping = enumSymbol.GetAttributes()
+            .Any(a => a.AttributeClass?.Name is "EnableApiResultMappingAttribute" or "EnableApiResultMapping");
+
+        return new ApiResultGeneratorArguments(enableApiResultMapping, enumSymbol);
     }
 
     public static bool Validate(INamedTypeSymbol enumSymbol, SourceProductionContext context)

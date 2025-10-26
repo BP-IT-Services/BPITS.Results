@@ -38,7 +38,7 @@ namespace {attributeNamespace}
         /// If not set, the generator will use the default enum value.
         /// </summary>
         public string? DefaultFailureValue {{ get; set; }}
-        
+
         /// <summary>
         /// Optional: The value to use for BadRequest/Validation failures.
         /// If not set, the generator will look for a 'BadRequest' value in the enum.

@@ -1,0 +1,6 @@
+@BPITS.Results.AspNetCore.Tests_HostAddress = http://localhost:5166
+
+GET {{BPITS.Results.AspNetCore.Tests_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

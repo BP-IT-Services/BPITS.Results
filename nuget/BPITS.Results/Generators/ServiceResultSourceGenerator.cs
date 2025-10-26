@@ -14,7 +14,7 @@ public class ServiceResultSourceGenerator : IIncrementalGenerator
         var enumDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => EnumFinder.IsSyntaxTargetForGeneration(s),
-                transform: static (ctx, _) => EnumFinder.GetSemanticTargetForGeneration(ctx))
+                transform: static (ctx, _) => EnumFinder.GetSemanticTargetForGeneration(ctx)?.NamedTypeSymbol) // We don't care about GeneratorArgs here
             .Where(static m => m is not null);
 
         // Generate the ServiceResult and ApiResult classes for each enum

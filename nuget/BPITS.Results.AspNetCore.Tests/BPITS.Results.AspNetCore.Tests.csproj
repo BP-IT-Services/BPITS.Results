@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>false</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.21" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BPITS.Results.Abstractions\BPITS.Results.Abstractions.csproj" />
+        <ProjectReference Include="..\BPITS.Results.AspNetCore.Abstractions\BPITS.Results.AspNetCore.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BPITS.Results.AspNetCore\BPITS.Results.AspNetCore.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\BPITS.Results\BPITS.Results.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+</Project>

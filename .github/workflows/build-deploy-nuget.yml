@@ -62,8 +62,11 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore ./nuget.sln
         
-      - name: Build library
+      - name: Build BPITS.Results
         run: dotnet build ./BPITS.Results/BPITS.Results.csproj --configuration Release --no-restore
+        
+      - name: Build BPITS.Results.AspNetCore
+        run: dotnet build ./BPITS.Results.AspNetCore/BPITS.Results.AspNetCore.csproj --configuration Release --no-restore
         
       - name: Build tests
         run: dotnet build ./nuget.sln --configuration Release --no-restore
@@ -80,7 +83,7 @@ jobs:
           reporter: "dotnet-trx"
       
       - name: Package NuGet
-        run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
+        run: dotnet pack ./nuget.sln --configuration Release --output ${{ env.NuGetDirectory }} /p:Version="${{ steps.get_version.outputs.VERSION != '' && steps.get_version.outputs.VERSION || format('0.0.{0}', github.run_number) }}"
 
       - name: Store NuGet artifact
         uses: actions/upload-artifact@v4
@@ -114,7 +117,7 @@ jobs:
       # Publish all NuGet packages to NuGet.org
       # Use --skip-duplicate to prevent errors if a package with the same version already exists.
       # If you retry a failed workflow, already published packages will be skipped without error.
-      - name: Publish NuGet package
+      - name: Publish NuGet packages
         run: |
           foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
               dotnet nuget push $file --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
