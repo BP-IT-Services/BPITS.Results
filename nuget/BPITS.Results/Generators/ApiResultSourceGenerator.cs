@@ -185,46 +185,4 @@ namespace {namespaceName}
     }}
 }}";
     }
-
-    private static ActionResultMapperSource GenerateActionResultMapper(ApiResultGeneratorArguments? generatorArgs)
-    {
-        if (generatorArgs is null || !generatorArgs.EnableApiResultMapping)
-        {
-            return new ActionResultMapperSource(string.Empty, string.Empty, string.Empty);
-        }
-
-        var actionResultMapperNamespace = "";
-        var actionResultMapperClassName = "";
-        
-        var inheritance = ": IActionResult";
-        var usings = @$"
-using Microsoft.AspNetCore.Mvc;
-using {actionResultMapperNamespace};
-";
-        
-        var methods = @$"
-public Task ExecuteResultAsync(ActionContext context) {{
-    return Task.FromResult({actionResultMapperClassName}.MapStatusCode);
-}}
-";
-        
-        return new ActionResultMapperSource(
-            usings: usings,
-            classInheritance: inheritance,
-            classMethods: methods);
-    }
-}
-
-public record ActionResultMapperSource
-{
-    public string Usings { get; }
-    public string ClassInheritance { get; }
-    public string ClassMethods { get; }
-    
-    public ActionResultMapperSource(string usings, string classInheritance, string classMethods)
-    {
-        Usings = usings;
-        ClassInheritance = classInheritance;
-        ClassMethods = classMethods;
-    }
 }
