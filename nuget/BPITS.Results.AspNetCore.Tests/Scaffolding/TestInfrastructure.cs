@@ -1,13 +1,14 @@
 ﻿using System.Net;
+using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
 namespace BPITS.Results.AspNetCore.Tests.Scaffolding;
 
 [ResultStatusCode(
     DefaultFailureValue = nameof(GenericFailure),
-    BadRequestValue = nameof(BadRequest),
-    IncludeActionResultMapper = true
+    BadRequestValue = nameof(BadRequest)
 )]
+[GenerateActionResultMapper]
 public enum TestStatusCode
 {
     [HttpStatusCode(HttpStatusCode.InternalServerError)]

@@ -1,4 +1,5 @@
 using System.Net;
+using BPITS.Results.Abstractions;
 
 namespace BPITS.Results.Tests.Scaffolding;
 

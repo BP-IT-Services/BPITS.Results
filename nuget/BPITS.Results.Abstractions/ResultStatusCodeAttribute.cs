@@ -18,9 +18,4 @@ public sealed class ResultStatusCodeAttribute : Attribute
     /// If not set, the generator will look for a 'BadRequest' value in the enum.
     /// </summary>
     public string? BadRequestValue { get; set; }
-
-    // <summary>
-    // Specifies whether to generate an 
-    // </summary>
-    public bool IncludeActionResultMapper { get; set; }
 }

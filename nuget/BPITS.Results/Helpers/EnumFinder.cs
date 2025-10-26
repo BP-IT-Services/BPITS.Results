@@ -34,11 +34,11 @@ public static class EnumFinder
 
         if (resultStatusCodeAttribute is null)
             return null;
-        
-        var hasActionResultMapper = resultStatusCodeAttribute
-            .NamedArguments
-            .FirstOrDefault(e => e.Key == "IncludeActionResultMapper")
-            .Value.Value as bool? == true;
+
+        // Check if the enum has the GenerateActionResultMapper attribute (AspNetCore extension)
+        var hasActionResultMapper = enumSymbol.GetAttributes()
+            .Any(a => a.AttributeClass?.Name is "GenerateActionResultMapperAttribute" or "GenerateActionResultMapper");
+
         return new ApiResultGeneratorArguments(hasActionResultMapper, enumSymbol);
     }
 

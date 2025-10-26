@@ -20,13 +20,14 @@ dotnet add package BPITS.Results.AspNetCore
 
 ### 1. Define Your Status Enum
 
-Add the `IncludeActionResultMapper = true` parameter to enable ASP.NET Core integration:
+Apply both `[ResultStatusCode]` and `[GenerateActionResultMapper]` attributes to enable ASP.NET Core integration:
 
 ```csharp
-using BPITS.Results;
+using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
-[ResultStatusCode(IncludeActionResultMapper = true)]
+[ResultStatusCode]
+[GenerateActionResultMapper]
 public enum MyApiStatusCode
 {
     Ok = 0,
@@ -42,8 +43,11 @@ Use the `[HttpStatusCode]` attribute to map enum values to HTTP status codes:
 
 ```csharp
 using System.Net;
+using BPITS.Results.Abstractions;
+using BPITS.Results.AspNetCore.Abstractions;
 
-[ResultStatusCode(IncludeActionResultMapper = true)]
+[ResultStatusCode]
+[GenerateActionResultMapper]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]
@@ -109,7 +113,7 @@ public class UsersController : ControllerBase
 
 ## How It Works
 
-When you set `IncludeActionResultMapper = true`, the source generator:
+When you apply the `[GenerateActionResultMapper]` attribute to your enum, the source generator:
 
 1. **Generates a partial `ApiResult<TEnum>` class** that implements `IActionResult`
 2. **Creates an HTTP status code mapper** that reads the `[HttpStatusCode]` attributes from your enum
@@ -137,7 +141,8 @@ Custom status codes allow you to define application-specific error states that a
 In the examples above, enum values like `400` and `404` are used for clarity, but **your enum values can be any numbers**. The `[HttpStatusCode]` attribute defines the actual HTTP status code returned to clients:
 
 ```csharp
-[ResultStatusCode(IncludeActionResultMapper = true)]
+[ResultStatusCode]
+[GenerateActionResultMapper]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]
@@ -161,10 +166,10 @@ When using BPITS.Results alone, returning `ApiResult` from a controller would re
 ```csharp
 // 1. Define enum with attributes
 [ResultStatusCode(
-    IncludeActionResultMapper = true,
     DefaultFailureValue = nameof(InternalServerError),
     BadRequestValue = nameof(BadRequest)
 )]
+[GenerateActionResultMapper]
 public enum MyApiStatusCode
 {
     [HttpStatusCode(HttpStatusCode.OK)]
