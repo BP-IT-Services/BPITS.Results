@@ -28,11 +28,11 @@ public static class EnumFinder
         if (enumSymbol is null)
             return null;
 
-        // Check if the enum has the ResultStatusCode attribute
-        var resultStatusCodeAttribute = enumSymbol.GetAttributes()
-            .FirstOrDefault(e => e.AttributeClass?.Name is "ResultStatusCodeAttribute" or "ResultStatusCode");
+        // Check if the enum has the GenerateApiResultAttribute
+        var hasApiResultAttribute = enumSymbol.GetAttributes()
+            .Any(e => e.AttributeClass?.Name is "GenerateApiResultAttribute" or "GenerateApiResult");
 
-        if (resultStatusCodeAttribute is null)
+        if (!hasApiResultAttribute)
             return null;
 
         // Check if the enum has the EnableApiResultMapping attribute (AspNetCore extension)
@@ -40,6 +40,24 @@ public static class EnumFinder
             .Any(a => a.AttributeClass?.Name is "EnableApiResultMappingAttribute" or "EnableApiResultMapping");
 
         return new ApiResultGeneratorArguments(enableApiResultMapping, enumSymbol);
+    }
+
+    public static INamedTypeSymbol? GetSemanticTargetForServiceResultGeneration(GeneratorSyntaxContext context)
+    {
+        var enumDeclarationSyntax = (EnumDeclarationSyntax)context.Node;
+        var model = context.SemanticModel;
+        var enumSymbol = model.GetDeclaredSymbol(enumDeclarationSyntax) as INamedTypeSymbol;
+        if (enumSymbol is null)
+            return null;
+
+        // Check if the enum has the GenerateServiceResultAttribute
+        var hasServiceResultAttribute = enumSymbol.GetAttributes()
+            .Any(e => e.AttributeClass?.Name is "GenerateServiceResultAttribute" or "GenerateServiceResult");
+
+        if (!hasServiceResultAttribute)
+            return null;
+
+        return enumSymbol;
     }
 
     public static bool Validate(INamedTypeSymbol enumSymbol, SourceProductionContext context)

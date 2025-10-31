@@ -20,13 +20,14 @@ dotnet add package BPITS.Results.AspNetCore
 
 ### 1. Define Your Status Enum
 
-Apply both `[ResultStatusCode]` and `[EnableApiResultMapping]` attributes to enable ASP.NET Core integration:
+Apply `[GenerateApiResult]`, optionally `[GenerateServiceResult]`, and `[EnableApiResultMapping]` attributes to enable ASP.NET Core integration:
 
 ```csharp
 using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
-[ResultStatusCode]
+[GenerateApiResult]
+[GenerateServiceResult]  // Optional: only needed if you want ServiceResult
 [EnableApiResultMapping]
 public enum MyApiStatusCode
 {
@@ -46,7 +47,8 @@ using System.Net;
 using BPITS.Results.Abstractions;
 using BPITS.Results.AspNetCore.Abstractions;
 
-[ResultStatusCode]
+[GenerateApiResult]
+[GenerateServiceResult]
 [EnableApiResultMapping]
 public enum MyApiStatusCode
 {

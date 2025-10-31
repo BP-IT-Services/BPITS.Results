@@ -49,12 +49,14 @@ dotnet add package BPITS.Results
 
 ### 1. Define Your Status Code Enum
 
-Create an enum with the `ResultStatusCode` attribute. The enum **must** include an `Ok` value:
+Create an enum with the `GenerateApiResult` and/or `GenerateServiceResult` attributes. The enum **must** include an `Ok` value:
 
 ```csharp
-using BPITS.Results;
+using BPITS.Results.Abstractions;
 
-[ResultStatusCode]
+// Generate both ApiResult and ServiceResult for this enum
+[GenerateApiResult]
+[GenerateServiceResult]
 public enum MyAppStatus
 {
     Ok = 0,
@@ -62,12 +64,24 @@ public enum MyAppStatus
     ResourceNotFound = 404,
     GenericFailure = 500
 }
+
+// Or generate only one type if needed
+[GenerateServiceResult]  // Only generates ServiceResult
+public enum InternalStatus
+{
+    Ok = 0,
+    DatabaseError = 500
+}
 ```
 
 You can also configure which enum values to use for default failures and validation errors:
 
 ```csharp
-[ResultStatusCode(
+[GenerateApiResult(
+    DefaultFailureValue = nameof(InternalServerError),
+    BadRequestValue = nameof(ValidationError)
+)]
+[GenerateServiceResult(
     DefaultFailureValue = nameof(InternalServerError),
     BadRequestValue = nameof(ValidationError)
 )]
@@ -448,14 +462,15 @@ if (result.IsFailure)
 
 ### Custom Status Code Configuration
 
-The `ResultStatusCode` attribute allows you to customize which enum values are used for common failure scenarios:
+The `GenerateApiResult` and `GenerateServiceResult` attributes allow you to customize which enum values are used for common failure scenarios:
 
 #### DefaultFailureValue
 
 Controls which status code is used when creating failures without explicitly specifying a status code:
 
 ```csharp
-[ResultStatusCode(DefaultFailureValue = nameof(InternalServerError))]
+[GenerateApiResult(DefaultFailureValue = nameof(InternalServerError))]
+[GenerateServiceResult(DefaultFailureValue = nameof(InternalServerError))]
 public enum MyAppStatus
 {
     Ok = 0,
@@ -479,7 +494,8 @@ var result = ServiceResult.Failure<User>("Something went wrong");
 Controls which status code is used for validation failures:
 
 ```csharp
-[ResultStatusCode(BadRequestValue = nameof(ValidationError))]
+[GenerateApiResult(BadRequestValue = nameof(ValidationError))]
+[GenerateServiceResult(BadRequestValue = nameof(ValidationError))]
 public enum MyAppStatus
 {
     Ok = 0,
@@ -509,7 +525,11 @@ public enum MyAppStatus
 #### Complete Configuration Example
 
 ```csharp
-[ResultStatusCode(
+[GenerateApiResult(
+    DefaultFailureValue = nameof(InternalServerError),
+    BadRequestValue = nameof(ValidationFailed)
+)]
+[GenerateServiceResult(
     DefaultFailureValue = nameof(InternalServerError),
     BadRequestValue = nameof(ValidationFailed)
 )]
