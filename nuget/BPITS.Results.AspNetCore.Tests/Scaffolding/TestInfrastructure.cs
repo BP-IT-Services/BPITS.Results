@@ -4,7 +4,11 @@ using BPITS.Results.AspNetCore.Abstractions;
 
 namespace BPITS.Results.AspNetCore.Tests.Scaffolding;
 
-[ResultStatusCode(
+[GenerateApiResult(
+    DefaultFailureValue = nameof(GenericFailure),
+    BadRequestValue = nameof(BadRequest)
+)]
+[GenerateServiceResult(
     DefaultFailureValue = nameof(GenericFailure),
     BadRequestValue = nameof(BadRequest)
 )]

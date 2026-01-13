@@ -4,7 +4,11 @@ using BPITS.Results.Abstractions;
 namespace BPITS.Results.Tests.Scaffolding;
 
 // Test status code enum similar to ROSCO's ResultStatusCode
-[ResultStatusCode(
+[GenerateApiResult(
+    DefaultFailureValue = nameof(GenericFailure),
+    BadRequestValue = nameof(BadRequest)
+)]
+[GenerateServiceResult(
     DefaultFailureValue = nameof(GenericFailure),
     BadRequestValue = nameof(BadRequest)
 )]

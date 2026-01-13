@@ -1,11 +1,12 @@
-﻿namespace BPITS.Results.Abstractions;
+namespace BPITS.Results.Abstractions;
 
 /// <summary>
-/// Marks an enum to be used as the ResultStatusCode for generated ServiceResult and ApiResult classes.
+/// Marks an enum to be used as the ResultStatusCode for generated ApiResult classes.
 /// The enum must contain an 'Ok' value.
+/// ApiResult is intended for user-facing API responses and does not include internal exception details.
 /// </summary>
 [AttributeUsage(AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
-public sealed class ResultStatusCodeAttribute : Attribute
+public sealed class GenerateApiResultAttribute : Attribute
 {
     /// <summary>
     /// Optional: The default failure status code to use when not specified.

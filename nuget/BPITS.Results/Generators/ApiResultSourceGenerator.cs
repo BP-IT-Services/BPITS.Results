@@ -10,14 +10,14 @@ public class ApiResultSourceGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Find all enums with the ResultStatusCode attribute
+        // Find all enums with the GenerateApiResultAttribute
         var enumDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => EnumFinder.IsSyntaxTargetForGeneration(s),
                 transform: static (ctx, _) => EnumFinder.GetSemanticTargetForGeneration(ctx))
             .Where(static m => m is not null);
 
-        // Generate the ServiceResult and ApiResult classes for each enum
+        // Generate the ApiResult classes for each enum
         context.RegisterSourceOutput(enumDeclarations,
             static (spc, source) => Execute(source!, spc));
     }
