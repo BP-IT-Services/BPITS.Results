@@ -30,7 +30,7 @@ catch (NotFoundException ex)
 }
 ```
 
-###Problems with this approach:
+### Problems with this approach:
 - Exceptions are expensive (performance overhead)
 - Unclear which exceptions a method might throw
 - Forces try-catch blocks everywhere
@@ -310,18 +310,18 @@ Think of results as boxes that contain either a value or an error:
 
 ```
 Success Box:
-┌─────────────────────────┐
-│ ✓ IsSuccess: true       │
-│ Value: User{...}        │
-│ StatusCode: Ok          │
-└─────────────────────────┘
+┌───────────────────────────┐
+│ ✓ IsSuccess: true         │
+│ Value: User{...}          │
+│ StatusCode: Ok            │
+└───────────────────────────┘
 
 Failure Box:
-┌─────────────────────────┐
-│ ✗ IsFailure: true       │
-│ ErrorMessage: "Not found"│
-│ StatusCode: NotFound    │
-└─────────────────────────┘
+┌───────────────────────────┐
+│ ✗ IsFailure: true         │
+│ ErrorMessage: "Not found" │
+│ StatusCode: NotFound      │
+└───────────────────────────┘
 ```
 
 You unbox the result by checking the state and extracting the value or handling the error.
