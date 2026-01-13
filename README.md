@@ -121,23 +121,34 @@ public async Task<ServiceResult<User>> GetUserAsync(Guid id)
 }
 ```
 
-### Type Safety
+### Custom Status Codes for Application Error Handling
 
-Custom status codes with compiler verification:
+Custom status codes enable consuming applications to handle different error types programmatically:
 
 ```csharp
-[GenerateServiceResult]
+[GenerateApiResult]
 public enum MyAppStatus
 {
     Ok = 0,
-    NotFound = 404,
+    UserNotFound = 1,
+    InvalidCredentials = 2,
+    AccountLocked = 3,
     InternalServerError = 500
 }
 
-// Compiler ensures you use valid status codes
-var result = ServiceResult.Failure<User>("Error", MyAppStatus.NotFound); // ✓ Valid
-var result = ServiceResult.Failure<User>("Error", 999); // ✗ Compiler error
+// Consuming applications can switch on status codes to handle errors appropriately:
+// - UserNotFound → Retry with different ID or show search UI
+// - InvalidCredentials → Allow retry, track attempts, trigger lockout logic
+// - AccountLocked → Redirect to account recovery flow
+// - InternalServerError → Retry with exponential backoff, log to error tracking
 ```
+
+This enables consuming applications to:
+- Handle different error types programmatically without parsing error messages
+- Implement appropriate retry logic, redirects, or fallback behavior per error type
+- Maintain consistent error handling semantics across the entire application
+- Support internationalization (status code → localized message mapping)
+- Provide better user experiences as a result of proper error handling
 
 ### Separation of Concerns
 

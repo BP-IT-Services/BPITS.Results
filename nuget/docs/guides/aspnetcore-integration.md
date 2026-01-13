@@ -163,13 +163,18 @@ var result = ApiResult.Failure<UserDto>("Not found", MyApiStatus.NotFound);
 
 ### Why Use Custom Status Codes?
 
-Instead of using HTTP status codes directly in your business logic, define domain-specific codes:
+Custom status codes enable consuming applications (frontends, mobile apps) to handle errors programmatically:
 
 **Benefits:**
-1. **Unified error handling** - Same codes across all layers (service, business, API)
-2. **Domain-driven** - Codes match your business domain, not HTTP
-3. **Flexibility** - Change HTTP mapping without changing business logic
-4. **Better observability** - Application-specific codes for logging and monitoring
+1. **Programmatic error handling** - Consuming applications switch on status codes to implement appropriate logic (retry, redirect, fallback, etc.)
+2. **No string parsing** - Error handling based on enum values, not parsing error message strings
+3. **Domain-driven** - Codes match your business domain (e.g., `SubscriptionExpired`, `PaymentDeclined`, `AccountLocked`)
+4. **Consistent semantics** - Same codes used across backend and frontend for predictable behavior
+5. **Internationalization** - Status codes map to localized messages on the client side
+6. **Flexibility** - Change HTTP mapping without affecting client error handling logic
+7. **Better UX** - Proper error handling enables appropriate user experiences
+
+**Example**: A frontend receives `StatusCode: SubscriptionExpired` and can implement specific logic (redirect to upgrade page, disable features, show modal), regardless of whether that maps to HTTP 402 or 403.
 
 ### Enum Values Don't Need to Match HTTP Codes
 

@@ -248,10 +248,16 @@ public enum MyAppStatus
 
 ### Why Use Custom Status Codes?
 
-1. **Type Safety**: Compiler ensures you use valid status codes
-2. **Domain-Driven**: Status codes match your business domain
-3. **Flexibility**: Not constrained by HTTP status codes
-4. **Consistency**: Same codes across all layers
+Custom status codes enable consuming applications (frontends, mobile apps, etc.) to handle errors programmatically:
+
+1. **Programmatic Error Handling**: Consuming applications can switch on status codes to implement appropriate logic for each error type
+2. **No String Parsing**: Error handling based on enum values, not parsing error message strings
+3. **Consistent Semantics**: Same error codes used across all application layers (backend, frontend, mobile)
+4. **Domain-Driven**: Error codes match your business domain (e.g., `SubscriptionExpired`, `PaymentDeclined`)
+5. **Internationalization**: Status codes map to localized messages in the client
+6. **Better User Experience**: Proper error handling enables appropriate UI responses (retry, redirect, show message, etc.)
+
+**Example**: A frontend receives `InvalidCredentials` and can implement retry logic with attempt tracking, while `AccountLocked` triggers a redirect to the account recovery flow - all without parsing error strings.
 
 ### Enum Values vs HTTP Status Codes
 

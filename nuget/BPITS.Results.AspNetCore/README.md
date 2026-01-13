@@ -85,10 +85,14 @@ When you apply `[EnableApiResultMapping]` to your enum, the source generator:
 
 ## Why Use Custom Status Codes?
 
-- **Unified error handling** - Use the same codes across all application layers
-- **Domain-driven** - Define error states that match your business domain
-- **Flexibility** - Change HTTP mapping without changing business logic
-- **Better observability** - Application-specific codes for logging
+Custom status codes enable consuming applications to handle errors programmatically:
+
+- **Programmatic error handling** - Clients switch on status codes to implement appropriate logic (retry, redirect, fallback)
+- **No string parsing** - Handle errors based on enum values, not parsing error messages
+- **Domain-driven** - Error codes match your business domain
+- **Consistent semantics** - Same codes across backend and frontend
+- **Flexibility** - Change HTTP mapping without affecting client logic
+- **Better UX** - Proper error handling enables appropriate user experiences
 
 ## Example Response
 
