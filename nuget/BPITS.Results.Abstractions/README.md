@@ -1,21 +1,29 @@
 # BPITS.Results.Abstractions
 
-This package contains the core abstractions and interfaces used by the [BPITS.Results](https://www.nuget.org/packages/BPITS.Results) source generator.
+Core abstractions and interfaces for BPITS.Results source generation.
 
 ## Installation
 
-This package is automatically included as a transitive dependency when you install `BPITS.Results`:
+This package is automatically included when you install BPITS.Results:
 
 ```bash
 dotnet add package BPITS.Results
 ```
 
-You typically do not need to install this package directly.
+You do not need to install this package directly.
+
+## Documentation
+
+See [BPITS.Results Documentation](../docs/) for complete usage information.
+
+## Core Package
+
+This package provides abstractions for [BPITS.Results](../BPITS.Results/README.md).
 
 ## Repository
 
-[https://github.com/BP-IT-Services/BPITS.Results](https://github.com/BP-IT-Services/BPITS.Results)
+[GitHub Repository](https://github.com/BP-IT-Services/BPITS.Results)
 
 ## License
 
-MIT
+MIT License

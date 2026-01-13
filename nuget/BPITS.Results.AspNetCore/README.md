@@ -4,10 +4,10 @@ ASP.NET Core extensions for BPITS.Results that enable `ApiResult` to implement `
 
 ## Features
 
-- **Direct IActionResult Implementation**: `ApiResult` directly implements `IActionResult` and can be returned from ASP.NET Core controllers
-- **Attribute-Based HTTP Status Code Mapping**: Define HTTP status codes using attributes on your enum values
-- **Source Generated**: Zero runtime overhead with compile-time code generation
-- **Simple Setup**: Three-step configuration with automatic mapper registration
+- **Direct IActionResult Implementation** - `ApiResult` directly implements `IActionResult` and can be returned from ASP.NET Core controllers
+- **Attribute-Based HTTP Status Code Mapping** - Define HTTP status codes using attributes on your enum values
+- **Source Generated** - Zero runtime overhead with compile-time code generation
+- **Simple Setup** - Three-step configuration with automatic mapper registration
 
 ## Installation
 
@@ -18,29 +18,7 @@ dotnet add package BPITS.Results.AspNetCore
 
 ## Quick Start
 
-### 1. Define Your Status Enum
-
-Apply `[GenerateApiResult]`, optionally `[GenerateServiceResult]`, and `[EnableApiResultMapping]` attributes to enable ASP.NET Core integration:
-
-```csharp
-using BPITS.Results.Abstractions;
-using BPITS.Results.AspNetCore.Abstractions;
-
-[GenerateApiResult]
-[GenerateServiceResult]  // Optional: only needed if you want ServiceResult
-[EnableApiResultMapping]
-public enum MyApiStatusCode
-{
-    Ok = 0,
-    BadRequest = 400,
-    ResourceNotFound = 404,
-    InternalServerError = 500
-}
-```
-
-### 2. Apply HTTP Status Code Attributes
-
-Use the `[HttpStatusCode]` attribute to map enum values to HTTP status codes:
+### 1. Define Your Status Enum with ASP.NET Core Attributes
 
 ```csharp
 using System.Net;
@@ -50,141 +28,13 @@ using BPITS.Results.AspNetCore.Abstractions;
 [GenerateApiResult]
 [GenerateServiceResult]
 [EnableApiResultMapping]
-public enum MyApiStatusCode
+public enum MyApiStatus
 {
     [HttpStatusCode(HttpStatusCode.OK)]
     Ok = 0,
 
     [HttpStatusCode(HttpStatusCode.BadRequest)]
     BadRequest = 400,
-
-    [HttpStatusCode(HttpStatusCode.NotFound)]
-    ResourceNotFound = 404,
-
-    [HttpStatusCode(HttpStatusCode.InternalServerError)]
-    InternalServerError = 500
-}
-```
-
-### 3. Register the Mapper
-
-In your `Program.cs`, register the generated mapper:
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-// Register the generated mapper
-builder.Services.AddMyApiStatusCodeActionResultMapper();
-
-var app = builder.Build();
-```
-
-### 4. Use in Controllers
-
-Return `ApiResult` directly from your controller actions:
-
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
-{
-    private readonly IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
-    [HttpGet("{id}")]
-    public ApiResult<UserDto> GetUser(int id)
-    {
-        var serviceResult = _userService.GetUser(id); // Returns ServiceResult<User>
-
-        // ApiResult implements IActionResult and can be returned directly
-        return ApiResult.FromServiceResult(serviceResult.MapValue(user => user?.ToDto()));
-    }
-
-    [HttpPost]
-    public ApiResult<UserDto> CreateUser([FromBody] CreateUserRequest request)
-    {
-        var serviceResult = _userService.CreateUser(request);
-        return ApiResult.FromServiceResult(serviceResult.MapValue(user => user?.ToDto()));
-    }
-}
-```
-
-## How It Works
-
-When you apply the `[EnableApiResultMapping]` attribute to your enum, the source generator:
-
-1. **Generates a partial `ApiResult<TEnum>` class** that implements `IActionResult`
-2. **Creates an HTTP status code mapper** that reads the `[HttpStatusCode]` attributes from your enum
-3. **Provides an extension method** (`AddMyApiStatusCodeActionResultMapper()`) to register the mapper in DI
-4. **Automatically maps** your custom status codes to HTTP status codes when the result is returned from a controller
-
-The `ApiResult` type becomes an `IActionResult`, so ASP.NET Core's model binding automatically:
-- Sets the HTTP response status code based on your mapping
-- Serializes the result value to JSON (on success)
-- Serializes error information (on failure)
-
-## Understanding Custom Status Codes
-
-### Why Use Custom Status Codes?
-
-Custom status codes allow you to define application-specific error states that are independent of HTTP semantics. This approach provides several advantages:
-
-- **Unified error handling** - Use the same status codes consistently across services, business logic, and API layers
-- **Domain-driven design** - Define error states that match your business domain rather than being constrained by HTTP conventions
-- **Easier maintenance** - Change the HTTP status code returned for a particular error by simply updating the `[HttpStatusCode]` attribute
-- **Better observability** - HTTP status codes are set appropriately for logging and monitoring, while your application logic works with meaningful domain-specific codes
-
-### Enum Values Don't Need to Match HTTP Status Codes
-
-In the examples above, enum values like `400` and `404` are used for clarity, but **your enum values can be any numbers**. The `[HttpStatusCode]` attribute defines the actual HTTP status code returned to clients:
-
-```csharp
-[ResultStatusCode]
-[EnableApiResultMapping]
-public enum MyApiStatusCode
-{
-    [HttpStatusCode(HttpStatusCode.OK)]
-    Success = 0,                    // Returns HTTP 200
-
-    [HttpStatusCode(HttpStatusCode.BadRequest)]
-    ValidationFailed = 1,           // Returns HTTP 400 (not 1!)
-
-    [HttpStatusCode(HttpStatusCode.NotFound)]
-    EntityNotFound = 2,             // Returns HTTP 404 (not 2!)
-
-    [HttpStatusCode(HttpStatusCode.InternalServerError)]
-    UnexpectedError = 99            // Returns HTTP 500 (not 99!)
-}
-```
-
-When using BPITS.Results alone, returning `ApiResult` from a controller would result in HTTP 200 for all responses, with your custom status codes only available in the response body. BPITS.Results.AspNetCore solves this by providing automatic mapping to appropriate HTTP status codes, giving you the best of both worlds: application-specific status codes for internal logic **and** standard HTTP status codes for clients, tooling, and infrastructure.
-
-## Complete Example
-
-```csharp
-// 1. Define enum with attributes
-[ResultStatusCode(
-    DefaultFailureValue = nameof(InternalServerError),
-    BadRequestValue = nameof(BadRequest)
-)]
-[EnableApiResultMapping]
-public enum MyApiStatusCode
-{
-    [HttpStatusCode(HttpStatusCode.OK)]
-    Ok = 0,
-
-    [HttpStatusCode(HttpStatusCode.BadRequest)]
-    BadRequest = 400,
-
-    [HttpStatusCode(HttpStatusCode.Unauthorized)]
-    Unauthorized = 401,
-
-    [HttpStatusCode(HttpStatusCode.Forbidden)]
-    Forbidden = 403,
 
     [HttpStatusCode(HttpStatusCode.NotFound)]
     NotFound = 404,
@@ -192,26 +42,26 @@ public enum MyApiStatusCode
     [HttpStatusCode(HttpStatusCode.InternalServerError)]
     InternalServerError = 500
 }
+```
 
-// 2. Register in Program.cs
+### 2. Register the Mapper in Program.cs
+
+```csharp
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddMyApiStatusCodeActionResultMapper();
 
-// 3. Use in services
-public class UserService
-{
-    public ServiceResult<User> GetUser(int id)
-    {
-        var user = _repository.Find(id);
-        if (user == null)
-            return ServiceResult.Failure<User>("User not found", MyApiStatusCode.NotFound);
+// Register the generated mapper
+builder.Services.AddMyApiStatusActionResultMapper();
 
-        return user;
-    }
-}
+var app = builder.Build();
+app.MapControllers();
+app.Run();
+```
 
-// 4. Return from controllers
+### 3. Return ApiResult from Controllers
+
+```csharp
 [ApiController]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     [HttpGet("{id}")]
@@ -219,22 +69,66 @@ public class UsersController : ControllerBase
     {
         var result = _userService.GetUser(id);
         return ApiResult.FromServiceResult(result.MapValue(u => u?.ToDto()));
-        // Returns 404 with error message if not found
-        // Returns 200 with UserDto if successful
+        // Automatically returns correct HTTP status code
     }
 }
 ```
 
-## Architecture
+## How It Works
 
-This package provides:
-- **`IActionResultMapper<TEnum>`** - Interface for HTTP status code mapping
-- **Partial `ApiResult<TEnum>` class** - Implements `IActionResult` when enabled
-- **Attribute-based mapper** - Automatically generated based on `[HttpStatusCode]` attributes
-- **DI registration extensions** - `AddMyEnumActionResultMapper()` methods for easy setup
-- **Source generators** - Creates all implementation code at compile time
+When you apply `[EnableApiResultMapping]` to your enum, the source generator:
 
-## Dependencies
+1. Generates a partial `ApiResult<TEnum>` class implementing `IActionResult`
+2. Creates an HTTP status code mapper based on `[HttpStatusCode]` attributes
+3. Provides a DI extension method to register the mapper
+4. Automatically maps your custom status codes to HTTP status codes
 
-- BPITS.Results (base package)
-- Microsoft.AspNetCore.Mvc.Abstractions >= 2.2.0
+## Why Use Custom Status Codes?
+
+- **Unified error handling** - Use the same codes across all application layers
+- **Domain-driven** - Define error states that match your business domain
+- **Flexibility** - Change HTTP mapping without changing business logic
+- **Better observability** - Application-specific codes for logging
+
+## Example Response
+
+### Success (HTTP 200)
+```json
+{
+  "value": { "id": 123, "name": "John" },
+  "isSuccess": true,
+  "statusCode": 0
+}
+```
+
+### Failure (HTTP 404)
+```json
+{
+  "value": null,
+  "isSuccess": false,
+  "statusCode": 404,
+  "errorMessage": "User not found"
+}
+```
+
+## Documentation
+
+For complete setup and usage instructions:
+
+- **[ASP.NET Core Integration Guide](../docs/guides/aspnetcore-integration.md)** - Complete setup guide
+- **[HTTP Status Mapping](../docs/advanced/http-status-mapping.md)** - Understanding the mapping mechanism
+- **[Custom Status Codes](../docs/advanced/custom-status-codes.md)** - Configuring status codes
+- **[Controller Patterns](../docs/guides/controller-patterns.md)** - Best practices for controllers
+- **[Full Documentation](../docs/)** - Complete documentation hub
+
+## Core Package
+
+This package extends [BPITS.Results](../BPITS.Results/README.md). See the core package for information about ServiceResult and ApiResult fundamentals.
+
+## Repository
+
+[GitHub Repository](https://github.com/BP-IT-Services/BPITS.Results)
+
+## License
+
+MIT License - see the [LICENSE](https://github.com/BP-IT-Services/BPITS.Results/blob/main/LICENSE) file for details.
