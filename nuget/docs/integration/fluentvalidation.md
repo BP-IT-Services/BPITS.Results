@@ -95,7 +95,7 @@ public async Task<ServiceResult<User>> CreateUserAsync(CreateUserRequest request
 }
 ```
 
-## See Also
+## Related
 
 - [Validation Patterns](../guides/validation-patterns.md)
 - [Working with Results](../guides/working-with-results.md)

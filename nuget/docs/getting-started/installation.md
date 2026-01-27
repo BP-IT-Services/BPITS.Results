@@ -1,6 +1,6 @@
 # Installation
 
-This guide walks you through installing BPITS.Results in your .NET project.
+Install BPITS.Results in your .NET project.
 
 ## Prerequisites
 
@@ -93,14 +93,6 @@ You should see the BPITS.Results packages in the output.
 - Source generator for creating action result mappers
 - DI extension methods for registering mappers
 
-## Next Steps
-
-Now that you have BPITS.Results installed:
-
-1. **[Quick Start Guide](quick-start.md)** - Build your first Result-based application
-2. **[Core Concepts](core-concepts.md)** - Understand ServiceResult vs ApiResult
-3. **[Working with Results](../guides/working-with-results.md)** - Learn common patterns
-
 ## Troubleshooting
 
 ### Source Generator Not Running
@@ -133,8 +125,9 @@ dotnet nuget locals all --clear
 dotnet restore
 ```
 
-## Need Help?
+## Related
 
-- Check the [GitHub Issues](https://github.com/BP-IT-Services/BPITS.Results/issues)
-- Review the [documentation](../README.md)
-- Open a [new issue](https://github.com/BP-IT-Services/BPITS.Results/issues/new) if you encounter problems
+- [Quick Start Guide](quick-start.md) - Build your first Result-based application
+- [Core Concepts](core-concepts.md) - Understand ServiceResult vs ApiResult
+- [Working with Results](../guides/working-with-results.md) - Common patterns
+- [GitHub Issues](https://github.com/BP-IT-Services/BPITS.Results/issues) - Report problems

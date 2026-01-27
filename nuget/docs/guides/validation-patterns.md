@@ -1,6 +1,6 @@
 # Validation Patterns
 
-Learn how to handle validation errors effectively with BPITS.Results, including single-field and multi-field validation scenarios.
+Handling validation errors with BPITS.Results, including single-field and multi-field validation.
 
 ## Table of Contents
 
@@ -8,7 +8,6 @@ Learn how to handle validation errors effectively with BPITS.Results, including 
 - [Basic Validation Failures](#basic-validation-failures)
 - [Single Field Validation](#single-field-validation)
 - [Multiple Field Validation](#multiple-field-validation)
-- [Complex Validation Scenarios](#complex-validation-scenarios)
 - [Working with Error Details](#working-with-error-details)
 - [Integration with FluentValidation](#integration-with-fluentvalidation)
 - [Best Practices](#best-practices)
@@ -180,148 +179,7 @@ The resulting JSON response (when converted to ApiResult):
 }
 ```
 
-### Builder Pattern for Validation
-
-For complex validation, consider a builder pattern:
-
-```csharp
-public class ValidationErrorBuilder
-{
-    private readonly Dictionary<string, List<string>> _errors = new();
-
-    public ValidationErrorBuilder AddError(string fieldName, string errorMessage)
-    {
-        if (!_errors.ContainsKey(fieldName))
-            _errors[fieldName] = new List<string>();
-
-        _errors[fieldName].Add(errorMessage);
-        return this;
-    }
-
-    public bool HasErrors => _errors.Any();
-
-    public Dictionary<string, string[]> Build()
-    {
-        return _errors.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ToArray()
-        );
-    }
-}
-
-// Usage
-public ServiceResult<User> CreateUser(CreateUserRequest request)
-{
-    var validation = new ValidationErrorBuilder();
-
-    // Email validation
-    if (string.IsNullOrEmpty(request.Email))
-        validation.AddError("Email", "Email is required");
-    else if (!IsValidEmail(request.Email))
-        validation.AddError("Email", "Email must be valid");
-
-    // Name validation
-    if (string.IsNullOrEmpty(request.Name))
-        validation.AddError("Name", "Name is required");
-
-    // Age validation
-    if (request.Age < 18)
-        validation.AddError("Age", "Must be at least 18 years old");
-    else if (request.Age > 120)
-        validation.AddError("Age", "Age seems invalid");
-
-    if (validation.HasErrors)
-    {
-        return ServiceResult.ValidationFailure<User>(
-            "Validation failed",
-            validation.Build()
-        );
-    }
-
-    // Create user...
-    return newUser;
-}
-```
-
-## Complex Validation Scenarios
-
-### Conditional Validation
-
-Validate fields conditionally based on other fields:
-
-```csharp
-public ServiceResult<Order> CreateOrder(CreateOrderRequest request)
-{
-    var errors = new Dictionary<string, string[]>();
-
-    // Basic validation
-    if (request.Items == null || !request.Items.Any())
-        errors["Items"] = new[] { "At least one item is required" };
-
-    // Conditional validation based on shipping method
-    if (request.ShippingMethod == ShippingMethod.HomeDelivery)
-    {
-        if (string.IsNullOrEmpty(request.ShippingAddress))
-            errors["ShippingAddress"] = new[] { "Shipping address is required for home delivery" };
-    }
-
-    // Conditional validation based on payment method
-    if (request.PaymentMethod == PaymentMethod.CreditCard)
-    {
-        if (string.IsNullOrEmpty(request.CardNumber))
-            errors["CardNumber"] = new[] { "Card number is required" };
-
-        if (string.IsNullOrEmpty(request.CardExpiry))
-            errors["CardExpiry"] = new[] { "Card expiry is required" };
-    }
-
-    if (errors.Any())
-        return ServiceResult.ValidationFailure<Order>("Validation failed", errors);
-
-    // Create order...
-    return newOrder;
-}
-```
-
-### Cross-Field Validation
-
-Validate relationships between fields:
-
-```csharp
-public ServiceResult<Appointment> ScheduleAppointment(ScheduleAppointmentRequest request)
-{
-    var errors = new Dictionary<string, string[]>();
-
-    // Individual field validation
-    if (request.StartTime == default)
-        errors["StartTime"] = new[] { "Start time is required" };
-
-    if (request.EndTime == default)
-        errors["EndTime"] = new[] { "End time is required" };
-
-    // Cross-field validation
-    if (request.EndTime <= request.StartTime)
-    {
-        errors["EndTime"] = new[] { "End time must be after start time" };
-    }
-
-    if ((request.EndTime - request.StartTime).TotalHours > 8)
-    {
-        errors["EndTime"] = new[] { "Appointment cannot exceed 8 hours" };
-    }
-
-    if (request.StartTime < DateTime.UtcNow)
-    {
-        errors["StartTime"] = new[] { "Cannot schedule appointments in the past" };
-    }
-
-    if (errors.Any())
-        return ServiceResult.ValidationFailure<Appointment>("Validation failed", errors);
-
-    // Schedule appointment...
-    return newAppointment;
-}
-```
+Validation errors can be collected however you prefer (dictionaries, lists, a builder class, etc.) - the important part is passing the final `Dictionary<string, string[]>` to `ValidationFailure`.
 
 ## Working with Error Details
 
@@ -348,32 +206,6 @@ if (result.IsFailure && result.ErrorDetails != null)
 // Password:
 //   - Password must be at least 8 characters
 //   - Password must contain a number
-```
-
-### Client-Side Error Display
-
-In a web application, error details can be easily bound to form fields:
-
-```csharp
-[HttpPost]
-public async Task<ApiResult<UserDto>> CreateUser([FromBody] CreateUserRequest request)
-{
-    var result = await _userService.CreateUserAsync(request);
-    return ApiResult.FromServiceResult(result.MapValue(u => u?.ToDto()));
-}
-
-// Client receives JSON:
-{
-  "errorDetails": {
-    "Email": ["Email is required"],
-    "Password": ["Password must be at least 8 characters"]
-  }
-}
-
-// Easy to bind to form fields in JavaScript:
-for (const [field, errors] of Object.entries(response.errorDetails)) {
-  displayFieldErrors(field, errors);
-}
 ```
 
 ## Integration with FluentValidation
@@ -536,16 +368,9 @@ public ServiceResult<User> CreateUser(CreateUserRequest request)
 
 This keeps methods focused and validation logic reusable.
 
-## See Also
+## Related
 
 - [Working with Results](working-with-results.md) - Core result operations
 - [Error Handling](error-handling.md) - Managing errors and status codes
 - [FluentValidation Integration](../integration/fluentvalidation.md) - Using FluentValidation with BPITS.Results
 - [Controller Patterns](controller-patterns.md) - Returning validation errors from controllers
-- [Best Practices](../reference/best-practices.md) - Comprehensive best practices
-
-## Next Steps
-
-- Learn about [Error Handling](error-handling.md) for managing different error types
-- Explore [Controller Patterns](controller-patterns.md) for returning validation errors from APIs
-- Check out the [FluentValidation Integration](../integration/fluentvalidation.md) guide

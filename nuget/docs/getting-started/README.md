@@ -1,7 +1,5 @@
 # Getting Started with BPITS.Results
 
-Welcome! This guide will help you get up and running with BPITS.Results quickly and confidently.
-
 ## What is BPITS.Results?
 
 BPITS.Results provides a type-safe Result pattern implementation for .NET with source generation. Instead of using exceptions or null values for error handling, you can return explicit success or failure results with detailed error information.
@@ -16,32 +14,14 @@ BPITS.Results provides a type-safe Result pattern implementation for .NET with s
 
 ## Learning Path
 
-Follow these guides in order for the best learning experience:
-
 ### 1. [Installation](installation.md)
-Install BPITS.Results in your .NET project. Takes 2 minutes.
-
-**You'll learn:**
-- How to install via NuGet
-- Which packages you need
-- How to verify installation
+Install BPITS.Results in your .NET project.
 
 ### 2. [Quick Start](quick-start.md)
-Build your first Result-based application in 3 simple steps. Takes 10-15 minutes.
-
-**You'll learn:**
-- How to define status code enums
-- How to use ServiceResult in services
-- How to use ApiResult in controllers
+Build your first Result-based application in 3 steps.
 
 ### 3. [Core Concepts](core-concepts.md)
-Understand the fundamental concepts and design philosophy. Takes 15-20 minutes.
-
-**You'll learn:**
-- What the Result pattern is and why it's useful
-- ServiceResult vs ApiResult differences
-- When to use each type
-- Mental models for working with results
+Understand the fundamental concepts and design philosophy.
 
 ## Quick Example
 
@@ -85,21 +65,7 @@ public async Task<ApiResult<UserDto>> GetUser(Guid id)
 
 ## After Getting Started
 
-Once you've completed these guides, continue your journey:
-
-- **[User Guides](../guides/)** - Learn common patterns for day-to-day usage
-- **[Working with Results](../guides/working-with-results.md)** - Master result creation, extraction, and transformation
+- **[User Guides](../guides/)** - Common patterns for day-to-day usage
+- **[Working with Results](../guides/working-with-results.md)** - Result creation, extraction, and transformation
 - **[Validation Patterns](../guides/validation-patterns.md)** - Handle validation errors effectively
-- **[ASP.NET Core Integration](../guides/aspnetcore-integration.md)** - Set up automatic HTTP status code mapping
-- **[Best Practices](../reference/best-practices.md)** - Write better Result-based code
-
-## Need Help?
-
-- Check the [documentation hub](../README.md)
-- Review [common questions in Quick Start](quick-start.md#common-questions)
-- Search [GitHub Issues](https://github.com/BP-IT-Services/BPITS.Results/issues)
-- Open a [new issue](https://github.com/BP-IT-Services/BPITS.Results/issues/new)
-
-## What's Next?
-
-Start with **[Installation](installation.md)** to add BPITS.Results to your project.Human: Continue with the next steps of your implementation. Pick up where you left off and complete the documentation reorganization.
+- **[ASP.NET Core Integration](../guides/aspnetcore-integration.md)** - Automatic HTTP status code mapping

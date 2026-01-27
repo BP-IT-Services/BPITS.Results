@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get started with BPITS.Results in 3 simple steps. This guide will have you implementing the Result pattern in minutes.
+Get started with BPITS.Results in 3 steps.
 
 ## Prerequisites
 
@@ -330,15 +330,6 @@ When using BPITS.Results, your API responses will be consistent:
 }
 ```
 
-## Next Steps
-
-Now that you have the basics down:
-
-1. **[Core Concepts](core-concepts.md)** - Understand the differences between ServiceResult and ApiResult
-2. **[Working with Results](../guides/working-with-results.md)** - Learn about `TryGet`, `MapValue`, and more
-3. **[ASP.NET Core Integration](../guides/aspnetcore-integration.md)** - Enable automatic HTTP status code mapping
-4. **[Best Practices](../reference/best-practices.md)** - Write better Result-based code
-
 ## Common Questions
 
 ### Do I always need both ServiceResult and ApiResult?
@@ -372,8 +363,9 @@ The implicit conversion requires the result to be successful. If you're not sure
 return ServiceResult.Success(value);
 ```
 
-## See Also
+## Related
 
 - [Core Concepts](core-concepts.md) - Deeper understanding of the Result pattern
 - [Installation](installation.md) - Installation troubleshooting
-- [Working with Results](../guides/working-with-results.md) - Advanced usage patterns
+- [Working with Results](../guides/working-with-results.md) - Usage patterns
+- [ASP.NET Core Integration](../guides/aspnetcore-integration.md) - Automatic HTTP status code mapping

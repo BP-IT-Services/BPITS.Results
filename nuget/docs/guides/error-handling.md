@@ -1,6 +1,6 @@
 # Error Handling
 
-Master error management with status codes, error details, and effective error handling strategies.
+Status codes, error details, and error handling strategies for BPITS.Results.
 
 ## Overview
 
@@ -222,9 +222,8 @@ public async Task<ServiceResult<User>> CreateUserAsync(CreateUserRequest request
 }
 ```
 
-## See Also
+## Related
 
 - [Validation Patterns](validation-patterns.md) - Field-level validation errors
 - [Working with Results](working-with-results.md) - Extracting error information
 - [Custom Status Codes](../advanced/custom-status-codes.md) - Configuring status codes
-- [Best Practices](../reference/best-practices.md) - Comprehensive best practices
