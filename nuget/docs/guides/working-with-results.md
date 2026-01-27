@@ -1,6 +1,6 @@
 # Working with Results
 
-This guide covers the fundamental operations for creating, extracting, and transforming results in BPITS.Results.
+Creating, extracting, and transforming results in BPITS.Results.
 
 ## Table of Contents
 
@@ -437,8 +437,6 @@ public async Task<ServiceResult<OrderDto>> CreateOrderAsync(CreateOrderRequest r
 4. If all operations succeed, perform the final operation
 5. Transform the final result with `MapValue` if needed
 
-See the [Error Propagation](../advanced/error-propagation.md) guide for more advanced patterns.
-
 ## Best Practices
 
 ### 1. Prefer TryGet for Value Extraction
@@ -514,16 +512,8 @@ public async Task<ServiceResult<User>> GetUser(Guid id) // Bad: ServiceResult in
 }
 ```
 
-## See Also
+## Related
 
 - [Validation Patterns](validation-patterns.md) - Handling validation errors
 - [Error Handling](error-handling.md) - Managing errors and status codes
-- [Type Transformations](../advanced/type-transformations.md) - Advanced MapValue techniques
-- [Error Propagation](../advanced/error-propagation.md) - Advanced chaining patterns
-- [Best Practices](../reference/best-practices.md) - Comprehensive best practices guide
-
-## Next Steps
-
-- Learn about [Validation Patterns](validation-patterns.md) for handling validation errors
-- Explore [Controller Patterns](controller-patterns.md) for using results in ASP.NET Core
-- Review [Advanced Type Transformations](../advanced/type-transformations.md) for complex scenarios
+- [Controller Patterns](controller-patterns.md) - Using results in ASP.NET Core

@@ -385,18 +385,10 @@ ServiceResult<TNew> PassThroughFail<TNew>() // Propagate failure
 
 See the [Working with Results](../guides/working-with-results.md) guide for detailed usage.
 
-## Next Steps
-
-Now that you understand the core concepts:
-
-1. **[Working with Results](../guides/working-with-results.md)** - Learn practical usage patterns
-2. **[Validation Patterns](../guides/validation-patterns.md)** - Handle validation errors
-3. **[Controller Patterns](../guides/controller-patterns.md)** - Use results in ASP.NET Core
-4. **[ASP.NET Core Integration](../guides/aspnetcore-integration.md)** - Enable automatic HTTP status mapping
-
-## See Also
+## Related
 
 - [Quick Start Guide](quick-start.md) - Hands-on introduction
-- [Best Practices](../reference/best-practices.md) - Writing effective Result-based code
-- [ServiceResult API Reference](../reference/service-result-api.md) - Complete API documentation
-- [ApiResult API Reference](../reference/api-result-api.md) - Complete API documentation
+- [Working with Results](../guides/working-with-results.md) - Practical usage patterns
+- [Validation Patterns](../guides/validation-patterns.md) - Handle validation errors
+- [Controller Patterns](../guides/controller-patterns.md) - Use results in ASP.NET Core
+- [ASP.NET Core Integration](../guides/aspnetcore-integration.md) - Automatic HTTP status mapping

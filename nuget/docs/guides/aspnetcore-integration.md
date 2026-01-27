@@ -1,6 +1,6 @@
 # ASP.NET Core Integration
 
-Complete setup and usage guide for BPITS.Results.AspNetCore, enabling automatic HTTP status code mapping for ApiResult.
+Setup and usage guide for BPITS.Results.AspNetCore — automatic HTTP status code mapping for ApiResult.
 
 ## Overview
 
@@ -159,22 +159,9 @@ var result = ApiResult.Failure<UserDto>("Not found", MyApiStatus.NotFound);
 // Returns: HTTP 404 with JSON body containing error details
 ```
 
-## Understanding Custom Status Codes
+## Custom Status Codes
 
-### Why Use Custom Status Codes?
-
-Custom status codes enable consuming applications (frontends, mobile apps) to handle errors programmatically:
-
-**Benefits:**
-1. **Programmatic error handling** - Consuming applications switch on status codes to implement appropriate logic (retry, redirect, fallback, etc.)
-2. **No string parsing** - Error handling based on enum values, not parsing error message strings
-3. **Domain-driven** - Codes match your business domain (e.g., `SubscriptionExpired`, `PaymentDeclined`, `AccountLocked`)
-4. **Consistent semantics** - Same codes used across backend and frontend for predictable behavior
-5. **Internationalization** - Status codes map to localized messages on the client side
-6. **Flexibility** - Change HTTP mapping without affecting client error handling logic
-7. **Better UX** - Proper error handling enables appropriate user experiences
-
-**Example**: A frontend receives `StatusCode: SubscriptionExpired` and can implement specific logic (redirect to upgrade page, disable features, show modal), regardless of whether that maps to HTTP 402 or 403.
+Your enum values don't need to match HTTP status codes. The `[HttpStatusCode]` attribute handles the mapping, and custom codes let consuming applications handle errors programmatically without parsing strings. See [Core Concepts — Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
 
 ### Enum Values Don't Need to Match HTTP Codes
 
@@ -313,9 +300,9 @@ public class ProductsController : ControllerBase
 }
 ```
 
-## See Also
+## Related
 
 - [HTTP Status Mapping](../advanced/http-status-mapping.md) - Deep dive into status code mapping
-- [Controller Patterns](controller-patterns.md) - Best practices for controllers
+- [Controller Patterns](controller-patterns.md) - Patterns for controllers
 - [Custom Status Codes](../advanced/custom-status-codes.md) - Configuring status codes
 - [Working with Results](working-with-results.md) - Core result operations

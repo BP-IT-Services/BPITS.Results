@@ -68,39 +68,14 @@ public enum ApplicationStatusCode
 
 ## Why Configure Custom Status Codes?
 
-Proper configuration ensures consuming applications receive consistent status codes for programmatic error handling:
-
-```csharp
-// With proper configuration:
-[GenerateApiResult(
-    DefaultFailureValue = nameof(InternalServerError),
-    BadRequestValue = nameof(ValidationError)
-)]
-public enum MyAppStatus
-{
-    Ok = 0,
-    ValidationError = 400,
-    InternalServerError = 500
-}
-
-// Consuming applications receive:
-// - ValidationError for validation failures → Can implement field validation logic, show inline errors
-// - InternalServerError for unexpected errors → Can implement retry logic with exponential backoff
-// This enables consistent, predictable error handling in consuming applications
-```
-
-**Benefits for consuming applications:**
-- **Predictable status codes**: Clients know what status codes to expect for each error type
-- **Programmatic handling**: Same error types always use the same status code, enabling reliable switch statements
-- **Appropriate logic**: Clients can implement different handling logic per error type (retry vs redirect vs show message)
-- **Better UX**: Proper error handling enables appropriate user experiences
+Proper configuration ensures consuming applications receive consistent, predictable status codes. See [Core Concepts — Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
 
 ## Fallback Behavior
 
 1. **DefaultFailureValue**: If not specified, uses the enum's default value (typically first member or value 0)
 2. **BadRequestValue**: If not specified, looks for "BadRequest" enum member, falls back to default value
 
-## See Also
+## Related
 
 - [Error Handling](../guides/error-handling.md) - Status code selection
 - [Validation Patterns](../guides/validation-patterns.md) - Using validation failures

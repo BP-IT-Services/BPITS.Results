@@ -106,7 +106,7 @@ public class OrderServiceTests
 }
 ```
 
-## See Also
+## Related
 
 - [Controller Patterns](../guides/controller-patterns.md) - Testing controllers
 - [Working with Results](../guides/working-with-results.md)

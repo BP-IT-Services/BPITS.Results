@@ -1,6 +1,6 @@
 # Controller Patterns
 
-Best practices and common patterns for using BPITS.Results in ASP.NET Core controllers.
+Patterns for using BPITS.Results in ASP.NET Core controllers.
 
 ## Table of Contents
 
@@ -8,8 +8,6 @@ Best practices and common patterns for using BPITS.Results in ASP.NET Core contr
 - [Basic Controller Actions](#basic-controller-actions)
 - [Paged Results](#paged-results)
 - [Exception Handling](#exception-handling)
-- [Different HTTP Methods](#different-http-methods)
-- [Testing Controller Actions](#testing-controller-actions)
 - [Best Practices](#best-practices)
 
 ## Overview
@@ -234,146 +232,6 @@ public class ExceptionHandlingMiddleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 ```
 
-## Different HTTP Methods
-
-### PATCH - Partial Update
-
-```csharp
-[HttpPatch("{id}")]
-public async Task<ApiResult<UserDto>> PatchUser(
-    Guid id,
-    [FromBody] JsonPatchDocument<UpdateUserRequest> patchDoc)
-{
-    // Get existing user
-    var getUserResult = await _userService.GetUserAsync(id);
-    if (!getUserResult.TryGet(out var user))
-        return ApiResult.FromServiceResult(getUserResult.MapValue<UserDto>(_ => null));
-
-    // Apply patch
-    var request = new UpdateUserRequest();
-    // Map from user to request
-    patchDoc.ApplyTo(request);
-
-    // Update
-    var updateResult = await _userService.UpdateUserAsync(id, request);
-    return ApiResult.FromServiceResult(updateResult.MapValue(u => u?.ToDto()));
-}
-```
-
-### HEAD - Check Existence
-
-```csharp
-[HttpHead("{id}")]
-public async Task<ApiResult> CheckUserExists(Guid id)
-{
-    var result = await _userService.UserExistsAsync(id);
-    return ApiResult.FromServiceResult(result);
-}
-```
-
-## Testing Controller Actions
-
-### Unit Testing Controllers
-
-```csharp
-public class UsersControllerTests
-{
-    private readonly Mock<IUserService> _userServiceMock;
-    private readonly UsersController _controller;
-
-    public UsersControllerTests()
-    {
-        _userServiceMock = new Mock<IUserService>();
-        _controller = new UsersController(_userServiceMock.Object);
-    }
-
-    [Fact]
-    public async Task GetUser_WhenUserExists_ReturnsSuccess()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var user = new User { Id = userId, Name = "John" };
-        _userServiceMock
-            .Setup(s => s.GetUserAsync(userId))
-            .ReturnsAsync(ServiceResult.Success(user));
-
-        // Act
-        var result = await _controller.GetUser(userId);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-        Assert.Equal("John", result.Value.Name);
-    }
-
-    [Fact]
-    public async Task GetUser_WhenUserNotFound_ReturnsFailure()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        _userServiceMock
-            .Setup(s => s.GetUserAsync(userId))
-            .ReturnsAsync(ServiceResult.Failure<User>(
-                "User not found",
-                MyAppStatus.NotFound
-            ));
-
-        // Act
-        var result = await _controller.GetUser(userId);
-
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(MyAppStatus.NotFound, result.StatusCode);
-        Assert.Equal("User not found", result.ErrorMessage);
-    }
-}
-```
-
-### Integration Testing
-
-```csharp
-public class UsersControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
-{
-    private readonly HttpClient _client;
-
-    public UsersControllerIntegrationTests(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-    }
-
-    [Fact]
-    public async Task GetUser_Returns200WithUser()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/users/some-guid");
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<ApiResult<UserDto>>(content);
-
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-    }
-
-    [Fact]
-    public async Task GetUser_Returns404WhenNotFound()
-    {
-        // Act
-        var response = await _client.GetAsync("/api/users/non-existent-id");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<ApiResult<UserDto>>(content);
-
-        Assert.True(result.IsFailure);
-        Assert.Equal(MyAppStatus.NotFound, result.StatusCode);
-    }
-}
-```
-
 ## Best Practices
 
 ### 1. Always Convert to ApiResult in Controllers
@@ -442,63 +300,9 @@ public async Task<ApiResult<UserDto>> CreateUser([FromBody] CreateUserRequest re
 }
 ```
 
-### 4. Use Meaningful Route Names
-
-```csharp
-// Good: RESTful routes
-[HttpGet("{id}")]                          // GET /api/users/123
-[HttpPost]                                 // POST /api/users
-[HttpPut("{id}")]                          // PUT /api/users/123
-[HttpDelete("{id}")]                       // DELETE /api/users/123
-[HttpGet("{id}/orders")]                   // GET /api/users/123/orders
-
-// Avoid: RPC-style routes
-[HttpGet("GetUserById/{id}")]              // Avoid
-[HttpPost("CreateNewUser")]                // Avoid
-```
-
-### 5. Use ApiController Attribute
-
-```csharp
-// Good: Use [ApiController] attribute
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
-{
-    // Automatic model validation
-    // Automatic 400 responses for invalid models
-    // Binding source parameter inference
-}
-
-// Without [ApiController], you lose these features
-```
-
-### 6. Leverage Model Binding
-
-```csharp
-// Good: Use model binding attributes
-[HttpGet("{id}")]
-public async Task<ApiResult<UserDto>> GetUser(Guid id) { }
-
-[HttpPost]
-public async Task<ApiResult<UserDto>> CreateUser([FromBody] CreateUserRequest request) { }
-
-[HttpGet]
-public async Task<ApiResult<List<UserDto>>> Search([FromQuery] string term) { }
-
-// ASP.NET Core will automatically bind and validate
-```
-
-## See Also
+## Related
 
 - [Working with Results](working-with-results.md) - Core result operations
 - [Validation Patterns](validation-patterns.md) - Handling validation in services
 - [ASP.NET Core Integration](aspnetcore-integration.md) - HTTP status code mapping
-- [Best Practices](../reference/best-practices.md) - Comprehensive best practices
 - [Dependency Injection](../integration/dependency-injection.md) - Testing patterns
-
-## Next Steps
-
-- Set up [ASP.NET Core Integration](aspnetcore-integration.md) for automatic HTTP status mapping
-- Learn about [Testing patterns](../integration/dependency-injection.md#testing-with-results)
-- Review [Best Practices](../reference/best-practices.md) for production-ready code

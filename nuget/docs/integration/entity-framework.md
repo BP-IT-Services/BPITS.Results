@@ -103,8 +103,7 @@ public async Task<ServiceResult<Order>> CreateOrderWithItemsAsync(Order order, L
 }
 ```
 
-## See Also
+## Related
 
 - [Working with Results](../guides/working-with-results.md)
 - [Error Handling](../guides/error-handling.md)
-- [Result Chaining](../advanced/result-chaining.md)
