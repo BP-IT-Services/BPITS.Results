@@ -85,34 +85,26 @@ public class UsersController : ControllerBase
 
 ## Documentation
 
-For comprehensive guides and examples, visit the [complete documentation](../docs/):
+For comprehensive guides and examples, visit the [complete documentation](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/README.md):
 
 ### Getting Started
-- [Installation Guide](../docs/getting-started/installation.md)
-- [Quick Start Tutorial](../docs/getting-started/quick-start.md)
-- [Core Concepts](../docs/getting-started/core-concepts.md) - Understanding ServiceResult vs ApiResult
+- [Installation Guide](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/getting-started/installation.md)
+- [Quick Start Tutorial](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/getting-started/quick-start.md)
+- [Core Concepts](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/getting-started/core-concepts.md) - Understanding ServiceResult vs ApiResult
 
 ### Common Patterns
-- [Working with Results](../docs/guides/working-with-results.md) - Creating, extracting, and converting results
-- [Validation Patterns](../docs/guides/validation-patterns.md) - Handling validation errors
-- [Controller Patterns](../docs/guides/controller-patterns.md) - Using results in ASP.NET Core
-- [Error Handling](../docs/guides/error-handling.md) - Managing errors and status codes
+- [Working with Results](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/working-with-results.md) - Creating, extracting, and converting results
+- [Validation Patterns](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/validation-patterns.md) - Handling validation errors
+- [Controller Patterns](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/controller-patterns.md) - Using results in ASP.NET Core
+- [Error Handling](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/error-handling.md) - Managing errors and status codes
 
 ### Advanced Topics
-- [Type Transformations](../docs/advanced/type-transformations.md) - Advanced MapValue techniques
-- [Error Propagation](../docs/advanced/error-propagation.md) - PassThroughFail patterns
-- [Custom Status Codes](../docs/advanced/custom-status-codes.md) - Configuring DefaultFailureValue and BadRequestValue
-- [Result Chaining](../docs/advanced/result-chaining.md) - Complex multi-step operations
+- [Custom Status Codes](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/advanced/custom-status-codes.md) - Configuring DefaultFailureValue and BadRequestValue
 
 ### Integration
-- [Entity Framework](../docs/integration/entity-framework.md) - Database operations
-- [FluentValidation](../docs/integration/fluentvalidation.md) - Validation library integration
-- [Dependency Injection](../docs/integration/dependency-injection.md) - DI and testing patterns
-
-### Reference
-- [Best Practices](../docs/reference/best-practices.md) - Comprehensive best practices
-- [ServiceResult API](../docs/reference/service-result-api.md) - Complete API documentation
-- [ApiResult API](../docs/reference/api-result-api.md) - Complete API documentation
+- [Entity Framework](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/integration/entity-framework.md) - Database operations
+- [FluentValidation](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/integration/fluentvalidation.md) - Validation library integration
+- [Dependency Injection](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/integration/dependency-injection.md) - DI and testing patterns
 
 ## ASP.NET Core Integration
 
@@ -122,7 +114,7 @@ For ASP.NET Core with automatic HTTP status code mapping, install the companion 
 dotnet add package BPITS.Results.AspNetCore
 ```
 
-See the [ASP.NET Core Integration Guide](../docs/guides/aspnetcore-integration.md) for setup instructions.
+See the [ASP.NET Core Integration Guide](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/aspnetcore-integration.md) for setup instructions.
 
 ## Repository
 

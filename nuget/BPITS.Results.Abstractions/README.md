@@ -14,11 +14,11 @@ You do not need to install this package directly.
 
 ## Documentation
 
-See [BPITS.Results Documentation](../docs/) for complete usage information.
+See [BPITS.Results Documentation](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/README.md) for complete usage information.
 
 ## Core Package
 
-This package provides abstractions for [BPITS.Results](../BPITS.Results/README.md).
+This package provides abstractions for [BPITS.Results](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/BPITS.Results/README.md).
 
 ## Repository
 

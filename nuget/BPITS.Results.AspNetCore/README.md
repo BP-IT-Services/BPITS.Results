@@ -119,15 +119,15 @@ Custom status codes enable consuming applications to handle errors programmatica
 
 For complete setup and usage instructions:
 
-- **[ASP.NET Core Integration Guide](../docs/guides/aspnetcore-integration.md)** - Complete setup guide
-- **[HTTP Status Mapping](../docs/advanced/http-status-mapping.md)** - Understanding the mapping mechanism
-- **[Custom Status Codes](../docs/advanced/custom-status-codes.md)** - Configuring status codes
-- **[Controller Patterns](../docs/guides/controller-patterns.md)** - Best practices for controllers
-- **[Full Documentation](../docs/)** - Complete documentation hub
+- **[ASP.NET Core Integration Guide](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/aspnetcore-integration.md)** - Complete setup guide
+- **[HTTP Status Mapping](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/advanced/http-status-mapping.md)** - Understanding the mapping mechanism
+- **[Custom Status Codes](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/advanced/custom-status-codes.md)** - Configuring status codes
+- **[Controller Patterns](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/controller-patterns.md)** - Patterns for controllers
+- **[Full Documentation](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/README.md)** - Complete documentation hub
 
 ## Core Package
 
-This package extends [BPITS.Results](../BPITS.Results/README.md). See the core package for information about ServiceResult and ApiResult fundamentals.
+This package extends [BPITS.Results](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/BPITS.Results/README.md). See the core package for information about ServiceResult and ApiResult fundamentals.
 
 ## Repository
 

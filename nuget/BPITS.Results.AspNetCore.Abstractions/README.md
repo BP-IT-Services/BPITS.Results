@@ -14,11 +14,11 @@ You do not need to install this package directly.
 
 ## Documentation
 
-See the [ASP.NET Core Integration Guide](../docs/guides/aspnetcore-integration.md) for usage information.
+See the [ASP.NET Core Integration Guide](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/docs/guides/aspnetcore-integration.md) for usage information.
 
 ## ASP.NET Core Package
 
-This package provides abstractions for [BPITS.Results.AspNetCore](../BPITS.Results.AspNetCore/README.md).
+This package provides abstractions for [BPITS.Results.AspNetCore](https://github.com/BP-IT-Services/BPITS.Results/blob/main/nuget/BPITS.Results.AspNetCore/README.md).
 
 ## Repository
 
