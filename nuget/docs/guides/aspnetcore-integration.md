@@ -1,6 +1,6 @@
 # ASP.NET Core Integration
 
-Setup and usage guide for BPITS.Results.AspNetCore — automatic HTTP status code mapping for ApiResult.
+Setup and usage guide for BPITS.Results.AspNetCore - automatic HTTP status code mapping for ApiResult.
 
 ## Overview
 
@@ -161,7 +161,7 @@ var result = ApiResult.Failure<UserDto>("Not found", MyApiStatus.NotFound);
 
 ## Custom Status Codes
 
-Your enum values don't need to match HTTP status codes. The `[HttpStatusCode]` attribute handles the mapping, and custom codes let consuming applications handle errors programmatically without parsing strings. See [Core Concepts — Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
+Your enum values don't need to match HTTP status codes. The `[HttpStatusCode]` attribute handles the mapping, and custom codes let consuming applications handle errors programmatically without parsing strings. See [Core Concepts - Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
 
 ### Enum Values Don't Need to Match HTTP Codes
 

@@ -69,7 +69,7 @@ Serializes result to JSON
 
 ## Custom Status Codes and Consuming Applications
 
-Custom status codes let consuming applications handle errors programmatically — switching on domain-specific codes rather than parsing error strings. See [Core Concepts — Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
+Custom status codes let consuming applications handle errors programmatically - switching on domain-specific codes rather than parsing error strings. See [Core Concepts - Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
 
 The key architectural benefit: your business logic uses domain codes (`UserNotFound`, `SubscriptionExpired`), the HTTP layer maps them to standard HTTP status codes, and clients can use either depending on their needs.
 

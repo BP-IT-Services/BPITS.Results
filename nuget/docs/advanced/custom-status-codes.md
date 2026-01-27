@@ -68,7 +68,7 @@ public enum ApplicationStatusCode
 
 ## Why Configure Custom Status Codes?
 
-Proper configuration ensures consuming applications receive consistent, predictable status codes. See [Core Concepts — Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
+Proper configuration ensures consuming applications receive consistent, predictable status codes. See [Core Concepts - Why Use Custom Status Codes?](../getting-started/core-concepts.md#why-use-custom-status-codes) for the full rationale.
 
 ## Fallback Behavior
 

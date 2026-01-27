@@ -179,7 +179,7 @@ The resulting JSON response (when converted to ApiResult):
 }
 ```
 
-Validation errors can be collected however you prefer (dictionaries, lists, a builder class, etc.) — the important part is passing the final `Dictionary<string, string[]>` to `ValidationFailure`.
+Validation errors can be collected however you prefer (dictionaries, lists, a builder class, etc.) - the important part is passing the final `Dictionary<string, string[]>` to `ValidationFailure`.
 
 ## Working with Error Details
 

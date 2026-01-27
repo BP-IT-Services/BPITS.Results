@@ -6,7 +6,7 @@ Practical guides for common patterns and day-to-day usage with BPITS.Results.
 
 ### [Working with Results](working-with-results.md)
 
-The foundational guide for result manipulation — creating, extracting, and transforming results.
+The foundational guide for result manipulation - creating, extracting, and transforming results.
 
 ### [Error Handling](error-handling.md)
 
