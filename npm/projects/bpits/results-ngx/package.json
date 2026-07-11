@@ -4,8 +4,8 @@
   "license": "MIT",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0",
+    "@angular/common": "^21.2.18",
+    "@angular/core": "^21.2.18",
     "@bpits/type-guards": "^1.0.4"
   },
   "dependencies": {
