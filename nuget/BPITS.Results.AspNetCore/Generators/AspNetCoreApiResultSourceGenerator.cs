@@ -20,6 +20,14 @@ public class AspNetCoreApiResultSourceGenerator : IIncrementalGenerator
         // Generate the AspNetCore-specific ApiResult classes and mappers
         context.RegisterSourceOutput(enumDeclarations,
             static (spc, source) => Execute(source!, spc));
+
+        // Minimal API support is emitted separately and only when the consumer references a framework that has
+        // the required types, so class libraries built against older ASP.NET Core packages keep compiling.
+        var minimalApiSupport = context.CompilationProvider
+            .Select(static (compilation, _) => MinimalApiSupport.Detect(compilation));
+
+        context.RegisterSourceOutput(enumDeclarations.Combine(minimalApiSupport),
+            static (spc, source) => MinimalApiResultSourceBuilder.Execute(source.Left!, source.Right, spc));
     }
 
     private static void Execute(ApiResultGeneratorArguments generatorArgs, SourceProductionContext context)
