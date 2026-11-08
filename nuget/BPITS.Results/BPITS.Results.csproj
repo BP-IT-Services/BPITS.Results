@@ -11,8 +11,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" PrivateAssets="all" />
+        <!-- Generators load inside the consumer's compiler, so this pin sets the oldest SDK that can run them
+             (4.8 = .NET 8 SDK / VS 17.8). Raising it silently disables generation for consumers on older
+             compilers (CS9057), which is what broke 2.0.2 for .NET 8 users. Do not bump without that in mind. -->
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
