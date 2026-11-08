@@ -1,0 +1,150 @@
+# Prepares a draft for manual review. Publishing it triggers the existing
+# NuGet and npm release workflows, which use the same root NBGV configuration.
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+
+env:
+  NBGV_GitEngine: LibGit2
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+
+jobs:
+  prepare-release:
+    name: Prepare Release Draft
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+      RELEASE_SHA: ${{ github.sha }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Determine package version (NerdBank Git Versioning)
+        uses: dotnet/nbgv@v0.4
+        id: nbgv
+
+      - name: Validate release version
+        id: tag
+        env:
+          RELEASE_VERSION: ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          NPM_VERSION: ${{ steps.nbgv.outputs.NpmPackageVersion }}
+        run: |
+          if [[ ! "$RELEASE_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::NBGV must produce a stable X.Y.Z version. Check version.json."
+            exit 1
+          fi
+
+          if [ "$RELEASE_VERSION" != "$NPM_VERSION" ]; then
+            echo "::error::NBGV NuGet and npm versions must match for a shared release."
+            exit 1
+          fi
+
+          tag="v${RELEASE_VERSION}"
+          # Include drafts and paginate so an existing release is never overwritten.
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" --jq '.[].tag_name' > release-tags.txt
+          if git show-ref --verify --quiet "refs/tags/$tag" || grep -Fxq "$tag" release-tags.txt; then
+            echo "::error::Tag or release $tag already exists. Choose a new version."
+            exit 1
+          fi
+          echo "name=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Find previous release
+        id: previous
+        run: |
+          # Use the newest published stable release reachable from this commit.
+          # Drafts must not shorten the changelog for later drafts.
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" \
+            --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' > published-tags.txt
+          previous=""
+          while IFS= read -r tag; do
+            if git rev-parse --verify --quiet "refs/tags/${tag}^{commit}" > /dev/null && \
+               git merge-base --is-ancestor "refs/tags/$tag" "$RELEASE_SHA"; then
+              previous="$tag"
+              break
+            fi
+          done < published-tags.txt
+          echo "Previous release: ${previous:-<none found>}"
+          echo "tag=$previous" >> "$GITHUB_OUTPUT"
+
+      - name: Build release notes from commit history
+        id: changelog
+        env:
+          PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+        run: |
+          range="$RELEASE_SHA"
+          if [ -n "$PREVIOUS_TAG" ]; then
+            range="refs/tags/${PREVIOUS_TAG}..${RELEASE_SHA}"
+          fi
+
+          total=$(git rev-list --no-merges --count "$range")
+          echo "commit_count=$total" >> "$GITHUB_OUTPUT"
+          git log --no-merges --pretty=format:'%s' "$range" > commits.txt
+
+          linkify() {
+            sed -E "s|\(#([0-9]+)\)|([#\1](${REPO_URL}/pull/\1))|g" | sed -E 's/^(.+)$/- \1/'
+          }
+
+          {
+            printf 'NuGet package version: `%s`\n' "$RELEASE_VERSION"
+            printf 'npm package version: `%s`\n\n' "$RELEASE_VERSION"
+            echo "## What's changed"
+            echo
+            changes=$(grep -v -E '^Bump ' commits.txt || true)
+            if [ -n "$changes" ]; then
+              printf '%s\n' "$changes" | linkify
+            else
+              echo "No non-dependency changes."
+            fi
+
+            upgrades=$(grep -E '^Bump ' commits.txt || true)
+            if [ -n "$upgrades" ]; then
+              echo
+              echo "## Package upgrades"
+              echo
+              printf '%s\n' "$upgrades" | linkify
+            fi
+
+            if [ -n "$PREVIOUS_TAG" ]; then
+              echo
+              echo "---"
+              echo
+              echo "**Full changelog**: ${REPO_URL}/compare/${PREVIOUS_TAG}...${RELEASE_SHA}"
+            fi
+          } > release-notes.md
+
+      - name: Create draft release
+        env:
+          RELEASE_TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          url=$(gh release create "$RELEASE_TAG" \
+            --draft \
+            --title "$RELEASE_TAG" \
+            --target "$RELEASE_SHA" \
+            --notes-file release-notes.md)
+          {
+            printf '## Draft release [%s](%s)\n\n' "$RELEASE_TAG" "$url"
+            cat release-notes.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Warn if no commits since last release
+        if: steps.changelog.outputs.commit_count == '0'
+        env:
+          PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
+        run: echo "::warning::No commits found since the last release ($PREVIOUS_TAG). Review the draft before publishing."
