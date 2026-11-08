@@ -13,6 +13,7 @@ Type-safe Result pattern for .NET with source generation.
 - **[Working with Results](guides/working-with-results.md)** - Creating, extracting, and converting results
 - **[Validation Patterns](guides/validation-patterns.md)** - Handling validation errors and field-level details
 - **[Controller Patterns](guides/controller-patterns.md)** - Using results in ASP.NET Core controllers
+- **[Minimal API Patterns](guides/minimal-api-patterns.md)** - Using results in ASP.NET Core Minimal API endpoints
 - **[Error Handling](guides/error-handling.md)** - Managing errors, status codes, and error details
 - **[ASP.NET Core Integration](guides/aspnetcore-integration.md)** - Complete setup and usage guide
 

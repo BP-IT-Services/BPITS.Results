@@ -22,6 +22,10 @@ Field-level validation errors and multi-field validation scenarios.
 
 Patterns for using results in ASP.NET Core controllers.
 
+### [Minimal API Patterns](minimal-api-patterns.md)
+
+Returning results from Minimal API endpoints, JSON options, and OpenAPI metadata.
+
 ### [ASP.NET Core Integration](aspnetcore-integration.md)
 
 Complete setup for automatic HTTP status code mapping.
