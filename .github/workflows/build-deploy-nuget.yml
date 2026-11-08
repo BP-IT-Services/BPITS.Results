@@ -15,7 +15,7 @@ env:
   NBGV_GitEngine: LibGit2
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
-  NuGetDirectory: ${{ github.workspace}}/nuget
+  NuGetDirectory: ${{ github.workspace }}/artifacts/nuget
   
 defaults:
   run:
@@ -25,16 +25,18 @@ jobs:
   create_nuget:
     name: "Build & Test"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: nuget
     steps:
+      # Full (non-sparse) checkout: sparse checkout makes a blob-less partial
+      # clone, and NBGV needs historical version.json blobs to compute height.
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
-          sparse-checkout: |
-            nuget
-            version.json
-          sparse-checkout-cone-mode: false
 
       - name: Determine package version (NerdBank Git Versioning)
         uses: dotnet/nbgv@v0.4
@@ -49,24 +51,15 @@ jobs:
           if ($env:RELEASE_TAG -cne "v$env:PACKAGE_VERSION") {
             throw "Release tag must match the NBGV package version: v$env:PACKAGE_VERSION"
           }
-            
-      # This step is needed because we can't check out a subdirectory.
-      # Therefore, all `nuget/` files should be moved to the project root.
-      - name: Move `nuget` files to root
-        run: |
-          Write-Output "Directory listing BEFORE moving to nuget/"
-          Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
-          Get-ChildItem -Path "nuget" -Force | Move-Item -Destination "."
-          Remove-Item -Recurse -Force -Path "nuget"
-          
-          Write-Output "Directory listing AFTER moving to nuget/"
-          Get-ChildItem -Force | Select-Object Mode, LastWriteTime, Length, Name | Format-Table -AutoSize
 
+      # Libraries target netstandard2.0; the test projects target net10.0.
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
-        
+          dotnet-version: |
+            8.x
+            10.x
+
       - name: Restore NuGet packages
         run: dotnet restore ./nuget.sln
         
@@ -87,7 +80,7 @@ jobs:
         if: ${{ !cancelled() }} # run this step even if previous step failed
         with:
           name: xUnit Tests
-          path: "BPITS.Results.Tests/TestResults/results.trx"
+          path: "nuget/**/TestResults/*.trx"
           reporter: "dotnet-trx"
       
       - name: Package NuGet
