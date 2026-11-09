@@ -1,11 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "2.1",
+  "version": "21.0",
   "nugetPackageVersion": {
     "semVer": 2
   },
   "publicReleaseRefSpec": [
     "^refs/heads/main$",
-    "^refs/tags/v\\d+\\.\\d+\\.\\d+$"
-  ]
+    "^refs/tags/npm-v\\d+\\.\\d+\\.\\d+$"
+  ],
+  "pathFilters": [
+    "."
+  ],
+  "inherit": false
 }

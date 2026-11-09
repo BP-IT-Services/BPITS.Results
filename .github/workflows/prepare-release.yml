@@ -1,9 +1,18 @@
-# Prepares a draft for manual review. Publishing it triggers the existing
-# NuGet and npm release workflows, which use the same root NBGV configuration.
+# Prepares a draft per package for manual review. NuGet and npm are versioned
+# independently, so publishing a draft triggers only that package's workflow.
 name: Prepare Release
 
 on:
   workflow_dispatch:
+    inputs:
+      package:
+        description: Package(s) to prepare a release draft for
+        type: choice
+        options:
+          - both
+          - nuget
+          - npm
+        default: both
 
 env:
   NBGV_GitEngine: LibGit2
@@ -17,14 +26,19 @@ concurrency:
 
 jobs:
   prepare-release:
-    name: Prepare Release Draft
+    name: Prepare ${{ matrix.package }} Release Draft
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(inputs.package == 'both' && '["nuget","npm"]' || format('["{0}"]', inputs.package)) }}
     env:
       GH_TOKEN: ${{ github.token }}
       REPO_URL: ${{ github.server_url }}/${{ github.repository }}
       RELEASE_SHA: ${{ github.sha }}
+      PACKAGE: ${{ matrix.package }}
     defaults:
       run:
         shell: bash
@@ -38,24 +52,27 @@ jobs:
       - name: Determine package version (NerdBank Git Versioning)
         uses: dotnet/nbgv@v0.4
         id: nbgv
+        with:
+          path: ${{ matrix.package }}
 
       - name: Validate release version
         id: tag
         env:
-          RELEASE_VERSION: ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          NUGET_VERSION: ${{ steps.nbgv.outputs.NuGetPackageVersion }}
           NPM_VERSION: ${{ steps.nbgv.outputs.NpmPackageVersion }}
         run: |
-          if [[ ! "$RELEASE_VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-            echo "::error::NBGV must produce a stable X.Y.Z version. Check version.json."
+          if [ "$PACKAGE" = "nuget" ]; then
+            release_version="$NUGET_VERSION"
+          else
+            release_version="$NPM_VERSION"
+          fi
+
+          if [[ ! "$release_version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::NBGV must produce a stable X.Y.Z version. Check ${PACKAGE}/version.json."
             exit 1
           fi
 
-          if [ "$RELEASE_VERSION" != "$NPM_VERSION" ]; then
-            echo "::error::NBGV NuGet and npm versions must match for a shared release."
-            exit 1
-          fi
-
-          tag="v${RELEASE_VERSION}"
+          tag="${PACKAGE}-v${release_version}"
           # Include drafts and paginate so an existing release is never overwritten.
           gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" --jq '.[].tag_name' > release-tags.txt
           if git show-ref --verify --quiet "refs/tags/$tag" || grep -Fxq "$tag" release-tags.txt; then
@@ -63,6 +80,7 @@ jobs:
             exit 1
           fi
           echo "name=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$release_version" >> "$GITHUB_OUTPUT"
 
       - name: Find previous release
         id: previous
@@ -71,14 +89,24 @@ jobs:
           # Drafts must not shorten the changelog for later drafts.
           gh api --paginate "repos/${GITHUB_REPOSITORY}/releases" \
             --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name' > published-tags.txt
-          previous=""
-          while IFS= read -r tag; do
-            if git rev-parse --verify --quiet "refs/tags/${tag}^{commit}" > /dev/null && \
-               git merge-base --is-ancestor "refs/tags/$tag" "$RELEASE_SHA"; then
-              previous="$tag"
-              break
-            fi
-          done < published-tags.txt
+
+          find_previous() {
+            local pattern="$1" tag
+            while IFS= read -r tag; do
+              if [[ "$tag" =~ $pattern ]] && \
+                 git rev-parse --verify --quiet "refs/tags/${tag}^{commit}" > /dev/null && \
+                 git merge-base --is-ancestor "refs/tags/$tag" "$RELEASE_SHA"; then
+                echo "$tag"
+                return
+              fi
+            done < published-tags.txt
+          }
+
+          previous=$(find_previous "^${PACKAGE}-v[0-9]+\.[0-9]+\.[0-9]+\$")
+          if [ -z "$previous" ]; then
+            # No prefixed release yet: fall back to the legacy shared vX.Y.Z tags.
+            previous=$(find_previous '^v[0-9]+\.[0-9]+\.[0-9]+$')
+          fi
           echo "Previous release: ${previous:-<none found>}"
           echo "tag=$previous" >> "$GITHUB_OUTPUT"
 
@@ -86,24 +114,28 @@ jobs:
         id: changelog
         env:
           PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
-          RELEASE_VERSION: ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          RELEASE_VERSION: ${{ steps.tag.outputs.version }}
+          RELEASE_TAG: ${{ steps.tag.outputs.name }}
         run: |
           range="$RELEASE_SHA"
           if [ -n "$PREVIOUS_TAG" ]; then
             range="refs/tags/${PREVIOUS_TAG}..${RELEASE_SHA}"
           fi
 
-          total=$(git rev-list --no-merges --count "$range")
+          total=$(git rev-list --no-merges --count "$range" -- "$PACKAGE")
           echo "commit_count=$total" >> "$GITHUB_OUTPUT"
-          git log --no-merges --pretty=format:'%s' "$range" > commits.txt
+          git log --no-merges --pretty=format:'%s' "$range" -- "$PACKAGE" > commits.txt
 
           linkify() {
             sed -E "s|\(#([0-9]+)\)|([#\1](${REPO_URL}/pull/\1))|g" | sed -E 's/^(.+)$/- \1/'
           }
 
           {
-            printf 'NuGet package version: `%s`\n' "$RELEASE_VERSION"
-            printf 'npm package version: `%s`\n\n' "$RELEASE_VERSION"
+            if [ "$PACKAGE" = "nuget" ]; then
+              printf 'NuGet package version: `%s`\n\n' "$RELEASE_VERSION"
+            else
+              printf 'npm package version: `%s` (Angular %s)\n\n' "$RELEASE_VERSION" "${RELEASE_VERSION%%.*}"
+            fi
             echo "## What's changed"
             echo
             changes=$(grep -v -E '^Bump ' commits.txt || true)
@@ -125,21 +157,27 @@ jobs:
               echo
               echo "---"
               echo
-              echo "**Full changelog**: ${REPO_URL}/compare/${PREVIOUS_TAG}...${RELEASE_SHA}"
+              echo "**Full changelog**: ${REPO_URL}/compare/${PREVIOUS_TAG}...${RELEASE_TAG}"
             fi
           } > release-notes.md
 
       - name: Create draft release
         env:
           RELEASE_TAG: ${{ steps.tag.outputs.name }}
+          RELEASE_VERSION: ${{ steps.tag.outputs.version }}
         run: |
+          if [ "$PACKAGE" = "nuget" ]; then
+            title="NuGet v${RELEASE_VERSION}"
+          else
+            title="npm v${RELEASE_VERSION}"
+          fi
           url=$(gh release create "$RELEASE_TAG" \
             --draft \
-            --title "$RELEASE_TAG" \
+            --title "$title" \
             --target "$RELEASE_SHA" \
             --notes-file release-notes.md)
           {
-            printf '## Draft release [%s](%s)\n\n' "$RELEASE_TAG" "$url"
+            printf '## Draft release [%s](%s)\n\n' "$title" "$url"
             cat release-notes.md
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -147,4 +185,4 @@ jobs:
         if: steps.changelog.outputs.commit_count == '0'
         env:
           PREVIOUS_TAG: ${{ steps.previous.outputs.tag }}
-        run: echo "::warning::No commits found since the last release ($PREVIOUS_TAG). Review the draft before publishing."
+        run: echo "::warning::No ${PACKAGE} commits found since the last release ($PREVIOUS_TAG). Review the draft before publishing."

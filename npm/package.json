@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "check-version": "node scripts/check-version.mjs",
+    "prebuild": "npm run check-version",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

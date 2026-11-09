@@ -26,6 +26,7 @@ permissions:
 jobs:
   create_npm:
     name: "Build"
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'npm-v')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,6 +46,8 @@ jobs:
       - name: Determine package version (NerdBank Git Versioning)
         uses: dotnet/nbgv@v0.4
         id: nbgv
+        with:
+          path: npm
 
       - name: Validate release tag
         if: github.event_name == 'release'
@@ -52,8 +55,8 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           PACKAGE_VERSION: ${{ steps.nbgv.outputs.NpmPackageVersion }}
         run: |
-          if ($env:RELEASE_TAG -cne "v$env:PACKAGE_VERSION") {
-            throw "Release tag must match the NBGV package version: v$env:PACKAGE_VERSION"
+          if ($env:RELEASE_TAG -cne "npm-v$env:PACKAGE_VERSION") {
+            throw "Release tag must match the NBGV package version: npm-v$env:PACKAGE_VERSION"
           }
 
       - name: Setup Node.js
@@ -64,6 +67,9 @@ jobs:
 
       - name: Install NPM packages
         run: npm ci
+
+      - name: Check package version matches Angular major
+        run: npm run check-version
 
       - name: Build @bpits/results-ngx
         run: npm run build
@@ -80,7 +86,7 @@ jobs:
     # Publish only when creating a GitHub Release
     # https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository
     # You can update this logic if you want to manage releases differently
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && startsWith(github.event.release.tag_name, 'npm-v')
     name: Publish NPM
     runs-on: ubuntu-latest
     needs: [ create_npm ]
